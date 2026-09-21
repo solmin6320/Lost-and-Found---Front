@@ -1,5 +1,8 @@
+import { QueryClientProvider } from '@tanstack/react-query'
+import { useState } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 
+import { createQueryClient } from '@/app/queryClient'
 import { AppRoutes } from '@/app/routes'
 
 /**
@@ -10,9 +13,15 @@ import { AppRoutes } from '@/app/routes'
  * (403/404 → /index.html, 200)이 받아 준다 (기능명세서 11장).
  */
 export function App() {
+  // 모듈 최상단이 아니라 useState 로 만든다. 모듈 스코프에 두면 개발 중 HMR 이
+  // 파일을 다시 평가할 때 캐시가 통째로 날아가고, 테스트에서 클라이언트를 분리할 수 없다.
+  const [queryClient] = useState(createQueryClient)
+
   return (
-    <BrowserRouter>
-      <AppRoutes />
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </QueryClientProvider>
   )
 }
