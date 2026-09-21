@@ -1,0 +1,8 @@
+# 리포지토리에는 항상 LF 로 저장한다.
+# CI(GitHub Actions)는 리눅스에서 돌고 개발은 윈도우라, 줄바꿈이 섞이면 diff 가 통째로 뒤집힌다.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff2 binary
