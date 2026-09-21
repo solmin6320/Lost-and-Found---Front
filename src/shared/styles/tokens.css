@@ -1,0 +1,171 @@
+/*
+ * 분실물 찾기 — 디자인 토큰
+ *
+ * 설계 원칙 하나로 요약하면 : 화면에서 색을 쓰는 곳은 유형 배지뿐이다.
+ * 나머지는 전부 잉크(회청색 무채색 계열)와 종이(흰색/캔버스)로 만든다.
+ * 사용자는 물건을 잃어버린 직후에 이 화면을 열고, 목록에서 "내 물건인가"를
+ * 1초 안에 판단해야 한다. 색이 배지에만 있으면 눈이 배지로 먼저 간다.
+ *
+ * 상태 배지(게시중/연락중/완료)는 색이 아니라 점 모양 + 선 굵기로 구분한다.
+ * 유형과 상태는 다른 정보이므로 같은 축(색)에 올리지 않는다.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* ───────── 잉크 : 텍스트·선·표면 ─────────
+     순수 회색이 아니라 푸른기를 섞었다. 공공 게시판·안내문의 인쇄 잉크에 가깝고,
+     따뜻한 크림 배경보다 "급할 때 보는 실용 화면"에 맞는다. */
+  --ink-950: #0d151c; /* 가장 진한 잉크. 포커스 링, 기본 버튼 배경 */
+  --ink-900: #14202b; /* 제목·본문 */
+  --ink-700: #3a4a57; /* 보조 본문 */
+  --ink-500: #5f707d; /* 메타(작성자·조회수·날짜). 흰 배경 5.1:1 */
+  --ink-400: #7c8b97; /* 플레이스홀더, 비활성 텍스트 */
+  --ink-300: #a9b6c0; /* 진한 테두리, 아이콘 */
+  --ink-200: #c8d2da; /* 입력 테두리 */
+  --ink-100: #e1e8ed; /* 구분선, 카드 테두리 */
+  --ink-050: #f1f5f7; /* 옅은 면(빈 상태, 스켈레톤 바탕) */
+
+  --paper: #ffffff;   /* 카드·시트 */
+  --canvas: #edf1f4;  /* 페이지 배경 */
+
+  /* 의미 별칭 — 컴포넌트는 되도록 이쪽을 쓴다 */
+  --text-strong: var(--ink-900);
+  --text-body: var(--ink-700);
+  --text-muted: var(--ink-500);
+  --text-disabled: var(--ink-400);
+  --border-subtle: var(--ink-100);
+  --border-strong: var(--ink-200);
+  --surface: var(--paper);
+  --surface-sunken: var(--ink-050);
+
+  /* ───────── 유형 배지 (LOST / FOUND) — 채운 배지 ─────────
+     앰버 대 청색. 적록색각이상에서도 갈라지는 조합이고,
+     명도까지 3.1:1 떨어져 있어 흑백 스크린샷에서도 구분된다.
+     빨강은 쓰지 않는다 — 빨강은 삭제(파괴적 동작) 전용으로 비워 둔다. */
+  --lost-bg: #e8a33d;
+  --lost-line: #c08526;
+  --lost-fg: var(--ink-950);   /* 8.5:1 */
+  --lost-text: #8a4a00;        /* 본문 속 '분실' 글자색. 흰 배경 6.9:1 */
+
+  --found-bg: #175e9e;
+  --found-line: #0e4877;
+  --found-fg: #ffffff;         /* 6.7:1 */
+  --found-text: #175e9e;
+
+  /* ───────── 상태 배지 (OPEN / IN_PROGRESS / DONE) — 외곽선 + 점 ─────────
+     색을 쓰지 않는다. 구분은 ① 라벨 텍스트 ② 점 모양 ③ 선 굵기다.
+     DONE 은 이미 끝난 글이므로 가장 약하게 두고, 카드 전체를 흐리게 한다. */
+  --status-open-fg: var(--ink-900);
+  --status-open-line: var(--ink-300);
+  --status-progress-fg: var(--ink-900);
+  --status-progress-line: var(--ink-200);
+  --status-done-fg: var(--ink-500);
+  --status-done-line: var(--ink-100);
+  --status-done-card-opacity: 0.6;
+
+  /* ───────── 파괴적 동작 ─────────
+     게시글 삭제는 DB 행과 S3 이미지를 함께 지운다. 복구가 없다.
+     그래서 빨강은 이 자리에만 쓴다. 다른 곳에 빨강이 없어야 여기서 손이 멈춘다. */
+  --danger: #b3251b;
+  --danger-hover: #971c14;
+  --danger-fg: #ffffff;
+  --danger-text: #a62018;
+  --danger-surface: #fbedec;
+
+  /* ───────── 타이포 ─────────
+     한 패밀리로 간다. 굵기와 크기 대비로 위계를 만든다.
+     Pretendard : 한글 자소 간격이 고르고 가변 폰트라 200~900을 한 파일로 쓴다.
+     동적 서브셋(index.html)이라 실제로 화면에 뜬 글자만 내려받는다. */
+  --font-sans:
+    'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+    'Apple SD Gothic Neo', 'Segoe UI', 'Malgun Gothic', system-ui, sans-serif;
+
+  /* 1.2 비율(단3도) 스케일. 모바일 밀도에 맞게 좁게 잡았다 */
+  --text-2xs: 0.75rem;    /* 12 — 배지, 캡션 */
+  --text-xs: 0.8125rem;   /* 13 — 메타 */
+  --text-sm: 0.875rem;    /* 14 — 보조 본문, 폼 도움말 */
+  --text-base: 1rem;      /* 16 — 본문. 모바일 입력에서 iOS 자동 확대를 막는 하한 */
+  --text-lg: 1.125rem;    /* 18 — 카드 제목 */
+  --text-xl: 1.3125rem;   /* 21 — 섹션 제목 */
+  --text-2xl: 1.625rem;   /* 26 — 상세 제목 */
+  --text-3xl: 2rem;       /* 32 — 페이지 제목 */
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+
+  /* 한글은 라틴보다 자간·행간을 넉넉히 준다 */
+  --leading-tight: 1.3;   /* 제목 */
+  --leading-snug: 1.5;    /* 카드 제목, 짧은 줄 */
+  --leading-normal: 1.7;  /* 본문 */
+  --tracking-tight: -0.02em;  /* 큰 제목 */
+  --tracking-normal: -0.01em; /* 본문 */
+
+  /* 본문 한 줄 최대 길이. 한글은 45자 언저리에서 끊는 것이 편하다 */
+  --measure: 34em;
+
+  /* ───────── 간격 (4px 기준) ───────── */
+  --space-1: 0.25rem;   /* 4 */
+  --space-2: 0.5rem;    /* 8 */
+  --space-3: 0.75rem;   /* 12 */
+  --space-4: 1rem;      /* 16 */
+  --space-5: 1.25rem;   /* 20 */
+  --space-6: 1.5rem;    /* 24 */
+  --space-8: 2rem;      /* 32 */
+  --space-10: 2.5rem;   /* 40 */
+  --space-14: 3.5rem;   /* 56 */
+  --space-18: 4.5rem;   /* 72 */
+
+  /* ───────── 반경 ─────────
+     전부 같은 값으로 깎지 않는다. 종이(카드)와 조작 대상(버튼)과
+     꼬리표(배지)는 물성이 다르다. */
+  --radius-thumb: 6px;    /* 목록 썸네일 */
+  --radius-control: 8px;  /* 버튼, 입력 */
+  --radius-card: 12px;    /* 카드, 시트 */
+  --radius-pill: 999px;   /* 배지 */
+
+  /* ───────── 선과 그림자 ─────────
+     그림자로 카드를 띄우지 않는다. 같은 회색 그림자를 모든 카드에 깔면
+     화면이 한 덩어리로 보여서 스캔이 안 된다. 경계는 1px 선으로 만든다.
+     그림자는 실제로 떠 있는 것(모달, 시트)에만 쓴다. */
+  --hairline: 1px solid var(--border-subtle);
+  --shadow-overlay: 0 12px 32px -8px rgb(13 21 28 / 0.28);
+  --scrim: rgb(13 21 28 / 0.48);
+
+  /* ───────── 레이아웃 ───────── */
+  --layout-max: 43.75rem;   /* 700px — 목록/상세 본문 폭 */
+  --layout-wide: 60rem;     /* 960px — 필터가 옆에 붙는 넓은 화면 */
+  --gutter: var(--space-4); /* 375px 기준 좌우 여백 */
+  --header-h: 3.5rem;       /* 56px */
+  --tap-min: 2.75rem;       /* 44px — 터치 대상 최소 */
+
+  /* ───────── 겹침 순서 ───────── */
+  --z-header: 100;
+  --z-dropdown: 200;
+  --z-scrim: 900;
+  --z-dialog: 1000;
+  --z-toast: 1100;
+
+  /* ───────── 모션 ─────────
+     등장 애니메이션을 섹션마다 깔지 않는다.
+     사용자가 누른 것에만 반응한다(열림·닫힘·확인). */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.25, 1);
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+}
+
+@media (min-width: 40rem) {
+  :root {
+    --gutter: var(--space-6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+  }
+}
