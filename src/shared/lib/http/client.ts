@@ -1,5 +1,6 @@
 import { env } from '@/shared/config/env'
 
+import { getAccessToken } from './accessToken'
 import {
   ApiError,
   CONNECTION_FAILED_MESSAGE,
@@ -19,6 +20,8 @@ export interface RequestOptions {
   /** 일반 객체는 JSON 으로, `FormData` 는 그대로(multipart) 보낸다 */
   body?: unknown
   signal?: AbortSignal
+  /** 액세스 토큰을 싣지 않는다. 토큰을 받으러 가는 `login` · `reissue` 전용 */
+  skipAuth?: boolean
 }
 
 /**
@@ -28,7 +31,8 @@ export interface RequestOptions {
  * 실패면 `ApiError`(서버가 응답함) 또는 `NetworkError`(응답 없음)를 던진다.
  */
 export async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const response = await send(buildUrl(path, options.query), buildInit(options))
+  const token = options.skipAuth ? null : getAccessToken()
+  const response = await send(buildUrl(path, options.query), buildInit(options, token))
   return readResult<T>(response, options.signal)
 }
 
@@ -47,9 +51,14 @@ function buildUrl(path: string, query: RequestOptions['query']): string {
   return `${env.apiBaseUrl}${path}${search ? `?${search}` : ''}`
 }
 
-function buildInit(options: RequestOptions): RequestInit {
+function buildInit(options: RequestOptions, token: string | null): RequestInit {
   const headers = new Headers({ Accept: 'application/json' })
   let body: BodyInit | undefined
+
+  // 공개 API(목록·상세)에도 싣는다. 상세의 조회수 집계가 로그인 회원 기준이다
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`)
+  }
 
   if (options.body instanceof FormData) {
     // Content-Type 을 직접 넣지 않는다. 브라우저가 boundary 를 붙여 채운다

@@ -1,3 +1,4 @@
+export { clearAccessToken, getAccessToken, setAccessToken } from './accessToken'
 export { request } from './client'
 export type { QueryValue, RequestOptions } from './client'
 export {
