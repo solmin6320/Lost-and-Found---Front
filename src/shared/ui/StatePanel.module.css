@@ -1,0 +1,43 @@
+/*
+ * 빈 상태 · 오류 상태가 같이 쓰는 틀.
+ * 콘텐츠가 있을 자리를 비워 두지 않고, 왜 비었는지와 다음에 할 일을 그 자리에서 말한다.
+ */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-14) var(--space-6);
+  text-align: center;
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: var(--space-2);
+  color: var(--ink-400);
+}
+
+.icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-snug);
+  color: var(--text-strong);
+}
+
+.description {
+  font-size: var(--text-sm);
+  color: var(--text-body);
+}
+
+.action {
+  margin-top: var(--space-4);
+}
