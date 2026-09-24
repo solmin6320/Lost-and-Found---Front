@@ -76,11 +76,16 @@
     border-color var(--duration-fast) var(--ease-out);
 }
 
+/*
+ * 고른 칸은 채우지 않고 굵은 선으로. 아무 조건이 없을 때 "전체" 세 칸이 화면에서 가장 무거워지면
+ * 기본값이 주인공이 된다. 잉크를 채우는 것은 "적용된 조건"(칩 줄) 몫으로 남긴다.
+ * 선을 안쪽 그림자로 그려 1px → 2px 이 되어도 글자가 밀리지 않는다.
+ */
 .choiceInput:checked + .choiceLabel {
   border-color: var(--ink-950);
-  background-color: var(--ink-950);
-  color: var(--paper);
-  font-weight: var(--weight-semibold);
+  box-shadow: inset 0 0 0 1px var(--ink-950);
+  color: var(--text-strong);
+  font-weight: var(--weight-bold);
 }
 
 .choiceInput:focus-visible + .choiceLabel {
