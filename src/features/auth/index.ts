@@ -1,1 +1,5 @@
 export type { LoginRequest, LoginResponse } from './api/types'
+export type { AuthActions, AuthContextValue } from './model/AuthContext'
+export { AuthProvider } from './model/AuthProvider'
+export type { AuthState, AuthStatus } from './model/authReducer'
+export { useAuth } from './model/useAuth'
