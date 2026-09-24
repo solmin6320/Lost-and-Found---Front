@@ -136,7 +136,8 @@ export function PostListPage() {
               firstPageHref={hrefForPage(1)}
             />
 
-            {query.data ? (
+            {/* 끝을 넘은 페이지면 "9 / 2" 가 된다. 그때는 빈 상태의 [첫 페이지로]가 나갈 문이다 */}
+            {query.data && query.data.content.length > 0 ? (
               <div className={styles.pagination}>
                 <Pagination
                   page={search.page}
