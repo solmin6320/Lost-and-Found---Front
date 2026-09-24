@@ -1,4 +1,4 @@
-import { useId } from 'react'
+import { useId, type CSSProperties } from 'react'
 
 import { cx } from '@/shared/lib/cx'
 import { todayIsoDate } from '@/shared/lib/date'
@@ -41,7 +41,7 @@ export function PostFilterFields({ value, onChange, periodError }: PostFilterFie
       <ChoiceGroup
         field="type"
         name={`${id}-type`}
-        segmented
+        columns={3}
         options={POST_TYPES.map((type) => ({ value: type, label: POST_TYPE_LABEL[type] }))}
         value={value.type}
         onChange={(type: PostType | undefined) => onChange({ type })}
@@ -50,6 +50,7 @@ export function PostFilterFields({ value, onChange, periodError }: PostFilterFie
       <ChoiceGroup
         field="category"
         name={`${id}-category`}
+        columns={3}
         options={POST_CATEGORIES.map((category) => ({
           value: category,
           label: POST_CATEGORY_LABEL[category],
@@ -61,6 +62,7 @@ export function PostFilterFields({ value, onChange, periodError }: PostFilterFie
       <ChoiceGroup
         field="status"
         name={`${id}-status`}
+        columns={4}
         options={POST_STATUSES.map((status) => ({ value: status, label: POST_STATUS_LABEL[status] }))}
         value={value.status}
         onChange={(status: PostStatus | undefined) => onChange({ status })}
@@ -132,7 +134,8 @@ interface ChoiceGroupProps<T extends string> {
   options: { value: T; label: string }[]
   value: T | undefined
   onChange: (value: T | undefined) => void
-  segmented?: boolean
+  /** "전체"를 포함한 칸 수. 한 줄에 다 들어가거나 줄이 가지런히 끊기게 고른다 */
+  columns: number
 }
 
 /** 단일 선택. 맨 앞의 "전체"가 조건 없음이다 — 백엔드도 필드당 값 하나만 받는다 */
@@ -142,14 +145,14 @@ function ChoiceGroup<T extends string>({
   options,
   value,
   onChange,
-  segmented,
+  columns,
 }: ChoiceGroupProps<T>) {
   const all: { value: T | undefined; label: string } = { value: undefined, label: '전체' }
 
   return (
     <fieldset className={styles.group} data-field={field}>
       <legend className={styles.legend}>{POST_FILTER_FIELD_NAME[field]}</legend>
-      <div className={cx(styles.choices, segmented && styles.segmented)}>
+      <div className={styles.choices} style={{ '--choice-columns': columns } as CSSProperties}>
         {[all, ...options].map((option) => (
           <label key={option.value ?? 'all'} className={styles.choice}>
             <input
