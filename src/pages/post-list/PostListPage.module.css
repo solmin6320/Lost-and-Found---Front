@@ -1,0 +1,108 @@
+/*
+ * SCR-01 배치
+ *   좁은 화면  : 검색 → 필드별 칩 → 결과 수 → 목록 1열
+ *   768 이상   : 목록 2열(목록 칸 폭이 40rem 을 넘으면)
+ *   1024 이상  : 필터를 왼쪽 열에 펼쳐 둔다. 1440 에서 양옆이 비지 않게 페이지 폭을 넓게 쓴다
+ */
+
+.layout {
+  display: grid;
+  gap: var(--space-8);
+}
+
+@media (min-width: 64rem) {
+  .layout {
+    grid-template-columns: var(--layout-sidebar) minmax(0, 1fr);
+    align-items: start;
+    gap: var(--space-10);
+  }
+}
+
+/* 목록이 길어도 필터는 손 닿는 곳에 남는다. 화면보다 길면 안에서 스크롤 */
+.sidebar {
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-5));
+  max-height: calc(100dvh - var(--header-h) - var(--space-10));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* 포커스 링이 잘리지 않을 만큼 */
+  padding: 3px;
+  margin: -3px;
+}
+
+.column {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.results {
+  margin-top: var(--space-2);
+  container-type: inline-size;
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  min-height: var(--tap-min);
+  margin-bottom: var(--space-3);
+  scroll-margin-top: calc(var(--header-h) + var(--space-4));
+}
+
+.count {
+  min-width: 4.5rem;
+  color: var(--text-body);
+  font-size: var(--text-sm);
+}
+
+.count strong {
+  color: var(--text-strong);
+  font-size: var(--text-base);
+  font-weight: var(--weight-extrabold);
+}
+
+.clearAll {
+  margin-left: auto;
+}
+
+/*
+ * 목록판 — 카드마다 그림자를 깔지 않는다. 한 장의 종이를 1px 선으로 나눈다.
+ * 칸마다 위·왼쪽 선만 긋고 판 바깥으로 1px 밀어 내 가장자리 선을 숨긴다.
+ * 그래서 열 수가 바뀌어도 마지막 줄이 비어도 선이 겹치거나 끊기지 않는다.
+ */
+.panel {
+  overflow: hidden;
+  border: var(--hairline);
+  border-radius: var(--radius-card);
+  background-color: var(--paper);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  margin: -1px 0 0 -1px;
+  transition: opacity var(--duration-base) var(--ease-out);
+}
+
+@container (min-width: 40rem) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.cell {
+  border-top: var(--hairline);
+  border-left: var(--hairline);
+}
+
+/* 조건을 바꿔 다시 불러오는 동안 직전 목록 */
+.grid[data-stale] {
+  opacity: 0.45;
+}
+
+.pagination {
+  margin-top: var(--space-6);
+}
