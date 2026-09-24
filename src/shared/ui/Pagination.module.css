@@ -1,0 +1,91 @@
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  container-type: inline-size;
+  font-variant-numeric: tabular-nums;
+}
+
+.pages {
+  display: none;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* 좁은 칸에서는 번호를 다 늘어놓지 않고 "3 / 12" 로 줄인다. 320px 에서 7칸 × 44px 은 넘친다 */
+.compact {
+  min-width: 5rem;
+  color: var(--text-body);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.compact strong {
+  color: var(--text-strong);
+  font-weight: var(--weight-bold);
+}
+
+@container (min-width: 30rem) {
+  .pages {
+    display: flex;
+  }
+
+  .compact {
+    display: none;
+  }
+}
+
+.page,
+.step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+  border-radius: var(--radius-control);
+  color: var(--text-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.page[aria-current='page'] {
+  background-color: var(--ink-950);
+  color: var(--paper);
+  font-weight: var(--weight-bold);
+}
+
+.step {
+  gap: var(--space-1);
+  padding-inline: var(--space-2) var(--space-3);
+}
+
+.step:last-child {
+  padding-inline: var(--space-3) var(--space-2);
+}
+
+.step svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.step[aria-disabled='true'] {
+  color: var(--text-disabled);
+}
+
+.gap {
+  display: inline-grid;
+  place-items: center;
+  width: 1.5rem;
+  color: var(--text-muted);
+}
+
+@media (hover: hover) {
+  .page:not([aria-current='page']):hover,
+  a.step:hover {
+    background-color: var(--paper);
+    color: var(--text-strong);
+  }
+}
