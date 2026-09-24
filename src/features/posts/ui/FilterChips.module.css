@@ -1,0 +1,164 @@
+/*
+ * 필터 칩. 라벨에 필드 이름을 넣는다 — `카테고리: 지갑`.
+ * 검색어에도 "지갑"을 넣을 수 있어서, 이름이 없으면 무엇이 걸렸는지 구분이 안 된다.
+ */
+
+/* ── 넓은 화면 : 적용된 조건 목록 ── */
+
+.active {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.removable {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 2rem;
+  padding-inline: var(--space-3) var(--space-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background-color: var(--paper);
+  color: var(--text-strong);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 보이는 높이는 32px, 누를 수 있는 높이는 44px */
+.removable::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: var(--tap-min);
+  transform: translateY(-50%);
+}
+
+.removable svg {
+  width: 1rem;
+  height: 1rem;
+  color: var(--text-muted);
+}
+
+.name {
+  color: var(--text-muted);
+  font-weight: var(--weight-medium);
+}
+
+@media (hover: hover) {
+  .removable:hover {
+    border-color: var(--ink-300);
+  }
+
+  .removable:hover svg {
+    color: var(--text-strong);
+  }
+}
+
+/* ── 좁은 화면 : 필드마다 칩 하나, 누르면 시트 ── */
+
+/* 화면 끝까지 밀어 붙여 옆으로 넘긴다. 목록 폭을 밀어내지 않는다 */
+.bar {
+  display: flex;
+  gap: 0.375rem;
+  margin-inline: calc(-1 * var(--gutter));
+  padding: 2px var(--gutter);
+  overflow-x: auto;
+  scroll-padding-inline: var(--gutter);
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.bar::-webkit-scrollbar {
+  display: none;
+}
+
+.trigger {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  min-height: 2.5rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background-color: var(--paper);
+  color: var(--text-strong);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button.trigger {
+  position: relative;
+  gap: 0.125rem;
+  padding-inline: var(--space-4) var(--space-3);
+}
+
+/* 보이는 높이는 40px, 누를 수 있는 높이는 44px */
+button.trigger::after,
+.triggerMain::after,
+.triggerClear::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: var(--tap-min);
+  transform: translateY(-50%);
+}
+
+.trigger svg {
+  width: 1rem;
+  height: 1rem;
+  color: var(--text-muted);
+}
+
+/* 걸려 있는 조건은 잉크를 채운다. 색이 아니라 명암으로 */
+.triggerActive {
+  border-color: var(--ink-950);
+  background-color: var(--ink-950);
+  color: var(--paper);
+  font-weight: var(--weight-semibold);
+}
+
+.triggerActive svg {
+  color: currentColor;
+}
+
+.triggerMain,
+.triggerClear {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  align-self: stretch;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.triggerMain {
+  padding-inline: var(--space-4) var(--space-1);
+  border-radius: var(--radius-pill) 0 0 var(--radius-pill);
+}
+
+.triggerClear {
+  justify-content: center;
+  min-width: 2.25rem;
+  padding-inline: var(--space-1) var(--space-2);
+  border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+}
+
+.triggerMain:focus-visible,
+.triggerClear:focus-visible {
+  outline-color: var(--paper);
+  outline-offset: -3px;
+}
+
+@media (hover: hover) {
+  button.trigger:hover {
+    border-color: var(--ink-300);
+  }
+}
