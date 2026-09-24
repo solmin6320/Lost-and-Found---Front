@@ -106,6 +106,14 @@ export function toSearchParams(search: PostListSearch): URLSearchParams {
   return params
 }
 
+/**
+ * 조건의 지문. 같은 조건이면 같은 문자열이다.
+ * 주소 변경은 transition 으로 늦게 그려지므로, "바뀐 뒤에 할 일"(포커스 옮기기 등)을 이 값의 변화에 건다
+ */
+export function postListSearchKey(search: PostListSearch): string {
+  return toSearchParams(search).toString()
+}
+
 /** 조건 → 서버 요청. 여기서만 page 를 0부터로 바꾼다 */
 export function toPostListParams(search: PostListSearch): PostListParams {
   return {

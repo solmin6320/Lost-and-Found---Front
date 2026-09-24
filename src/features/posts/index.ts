@@ -10,6 +10,7 @@ export {
   POST_FILTER_FIELDS,
   POST_FILTER_FIELD_NAME,
   hasActiveFilters,
+  postListSearchKey,
   toPostListParams,
   withoutFilter,
   withoutFilters,
