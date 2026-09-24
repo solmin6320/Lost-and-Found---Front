@@ -14,6 +14,7 @@ export {
   withoutFilters,
 } from './model/postListSearch'
 export type { PostFilterField, PostListSearch } from './model/postListSearch'
+export { usePostListSearch } from './model/usePostListSearch'
 export { StatusBadge } from './ui/StatusBadge'
 export { TypeBadge } from './ui/TypeBadge'
 export {
