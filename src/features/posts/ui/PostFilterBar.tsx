@@ -20,12 +20,17 @@ interface PostFilterBarProps {
 /**
  * 좁은 화면의 필터 입구. 필드마다 칩 하나 — 무엇으로 좁힐 수 있는지가 한 줄에 보인다.
  * 걸린 칩은 값을 보여주고(`카테고리: 지갑`) 옆에 지우기 버튼이 붙는다.
- * 순서는 걸렸든 아니든 고정이다. 칩이 자리를 옮기면 손이 매번 다시 찾아야 한다.
+ * 걸린 칩을 앞으로 모은다. 320px 에서는 칩 세 개 남짓만 보여, 뒤쪽에 걸린 조건이 화면 밖에 숨으면
+ * "왜 결과가 적지" 를 풀 수 없다. 걸리지 않은 칩끼리의 순서는 그대로다.
  */
 export function PostFilterBar({ search, onOpen, onRemove }: PostFilterBarProps) {
+  const fields = [...POST_FILTER_FIELDS].sort(
+    (a, b) => Number(filterValueLabel(search, b) !== null) - Number(filterValueLabel(search, a) !== null),
+  )
+
   return (
     <div className={styles.bar} role="group" aria-label="필터">
-      {POST_FILTER_FIELDS.map((field) => {
+      {fields.map((field) => {
         const name = POST_FILTER_FIELD_NAME[field]
         const value = filterValueLabel(search, field)
 
