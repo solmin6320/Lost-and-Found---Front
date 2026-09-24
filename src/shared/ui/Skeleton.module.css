@@ -1,0 +1,30 @@
+/*
+ * 스켈레톤 — 실제 콘텐츠가 들어올 자리와 크기를 미리 잡는다.
+ * 숨 쉬듯 옅어지는 것 하나만 둔다. 빛이 지나가는 효과(shimmer)는 눈을 끌어 오히려 느려 보인다.
+ */
+
+.skeleton {
+  display: block;
+  border-radius: var(--radius-thumb);
+  background-color: var(--ink-100);
+  animation: breathe 1.4s ease-in-out infinite;
+}
+
+/* 한 줄짜리 글자 자리. 글자 높이만큼 두고 위아래는 행간으로 남긴다 */
+.text {
+  height: 0.8em;
+  margin-block: 0.35em;
+  border-radius: 4px;
+}
+
+@keyframes breathe {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
