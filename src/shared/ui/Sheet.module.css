@@ -1,0 +1,99 @@
+/*
+ * 바텀 시트 — 좁은 화면에서 목록을 밀어내지 않고 조건을 고르는 자리.
+ * 실제로 떠 있는 것이라 그림자를 쓴다. 가로 모드 휴대폰(높이 375px 남짓)에서도
+ * 잘리지 않게 높이를 dvh 로 묶고 안쪽만 스크롤한다.
+ */
+
+.sheet {
+  inset: auto 0 0;
+  width: 100%;
+  max-width: 40rem;
+  max-height: min(90dvh, 48rem);
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  background-color: var(--paper);
+  color: inherit;
+  box-shadow: var(--shadow-overlay);
+}
+
+.sheet[open] {
+  display: flex;
+  flex-direction: column;
+  animation: rise var(--duration-base) var(--ease-out);
+}
+
+.sheet::backdrop {
+  background-color: var(--scrim);
+}
+
+.sheet[open]::backdrop {
+  animation: fade var(--duration-base) var(--ease-out);
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.header {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5);
+  border-bottom: var(--hairline);
+}
+
+.title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+}
+
+.close {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  border-radius: var(--radius-control);
+  color: var(--text-body);
+}
+
+.close svg {
+  width: 1.375rem;
+  height: 1.375rem;
+}
+
+@media (hover: hover) {
+  .close:hover {
+    background-color: var(--surface-sunken);
+    color: var(--text-strong);
+  }
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-5);
+}
+
+/* 엄지가 닿는 아래쪽에 결정 버튼. 홈 인디케이터에 가리지 않게 비켜 둔다 */
+.footer {
+  display: flex;
+  flex: none;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5) calc(var(--space-3) + env(safe-area-inset-bottom));
+  border-top: var(--hairline);
+}
