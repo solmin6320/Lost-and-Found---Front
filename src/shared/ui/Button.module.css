@@ -1,0 +1,112 @@
+/*
+ * 버튼 — 주 동작(primary)은 잉크를 채우고, 나머지는 선이나 글자만 둔다.
+ * 색을 쓰지 않는다. 화면에서 색은 유형 배지 몫이다.
+ */
+
+.button {
+  --button-h: var(--tap-min);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--button-h);
+  padding-inline: var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.button svg {
+  flex: none;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+}
+
+.block {
+  width: 100%;
+}
+
+/* 작은 버튼 — 보이는 높이만 줄이고, 손가락이 닿는 면적은 44px 을 지킨다 */
+.sm {
+  --button-h: 2.25rem;
+  padding-inline: var(--space-3);
+}
+
+.sm::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: var(--tap-min);
+  transform: translateY(-50%);
+}
+
+/* ── 변형 ─────────────────────────────── */
+
+.primary {
+  background-color: var(--ink-950);
+  color: var(--paper);
+}
+
+.primary:disabled {
+  background-color: var(--ink-200);
+  color: var(--ink-500);
+}
+
+.secondary {
+  background-color: var(--paper);
+  border-color: var(--border-strong);
+  color: var(--text-strong);
+}
+
+.secondary:disabled {
+  background-color: var(--surface-sunken);
+  color: var(--text-disabled);
+}
+
+.ghost {
+  background-color: transparent;
+  color: var(--text-body);
+}
+
+.ghost:disabled {
+  color: var(--text-disabled);
+}
+
+/* 터치 기기에서는 탭한 뒤 hover 색이 들러붙는다. 마우스에서만 */
+@media (hover: hover) {
+  .primary:hover:not(:disabled) {
+    background-color: var(--ink-700);
+  }
+
+  .secondary:hover:not(:disabled) {
+    border-color: var(--ink-300);
+    background-color: var(--surface-sunken);
+  }
+
+  .ghost:hover:not(:disabled) {
+    background-color: var(--surface-sunken);
+    color: var(--text-strong);
+  }
+}
