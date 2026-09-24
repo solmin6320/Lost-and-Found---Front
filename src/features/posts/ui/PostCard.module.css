@@ -67,6 +67,14 @@
   overflow-wrap: anywhere;
 }
 
+/* 칸이 넓으면 썸네일이 커진 만큼 제목도 키운다. 1순위가 그림에 밀리지 않게 */
+@container (min-width: 27rem) {
+  .inner .title,
+  .inner .skeletonTitle {
+    font-size: var(--text-lg);
+  }
+}
+
 .link {
   color: inherit;
   text-decoration: none;
