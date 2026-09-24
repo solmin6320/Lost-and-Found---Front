@@ -71,7 +71,8 @@ export function PostFilterPanel({ search, onApply }: PostFilterPanelProps) {
       noValidate
       aria-labelledby={titleId}
     >
-      <h2 id={titleId} className={styles.title}>
+      {/* 묶음 이름(유형·카테고리…)이 이미 굵게 서 있다. 제목은 스크린리더에만 */}
+      <h2 id={titleId} className="sr-only">
         필터
       </h2>
       <PostFilterFields value={draft} onChange={handleChange} periodError={error} />
