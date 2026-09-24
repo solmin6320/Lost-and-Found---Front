@@ -70,6 +70,21 @@ a:hover {
   color: var(--ink-950);
 }
 
+/*
+ * 모션 줄이기 — 토큰의 duration 만 0 으로 두면 컴포넌트가 직접 쓴 animation 은 남는다.
+ * 전정기관 질환이 있는 사용자에게 어지럼증을 준다(디자인품질기준 6장).
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* 숫자가 섞인 메타 정보(조회수·날짜)가 줄마다 흔들리지 않게 */
 time,
 [data-numeric] {
