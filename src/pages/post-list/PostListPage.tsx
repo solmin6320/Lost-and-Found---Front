@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery, type UseQueryResult } from '@tanstack/react-query'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { To } from 'react-router-dom'
 
 import { paths } from '@/app/paths'
@@ -15,6 +15,7 @@ import {
   PostSearchBar,
   hasActiveFilters,
   postListQueryOptions,
+  postListSearchKey,
   toPostListParams,
   usePostListSearch,
   withoutFilter,
@@ -60,6 +61,9 @@ export function PostListPage() {
   })
   const summaryRef = useRef<HTMLDivElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
+  const filterBarRef = useRef<HTMLDivElement>(null)
+
+  const focusResults = () => headingRef.current?.focus({ preventScroll: true })
 
   const removeFilter = (field: PostFilterField) => apply(withoutFilter(search, field))
   const clearFilters = () => apply(withoutFilters(search))
@@ -68,8 +72,34 @@ export function PostListPage() {
   function handlePageNavigate() {
     requestAnimationFrame(() => {
       summaryRef.current?.scrollIntoView({ block: 'start' })
-      headingRef.current?.focus({ preventScroll: true })
+      focusResults()
     })
+  }
+
+  /**
+   * 조건이 바뀌어 다시 그려진 **뒤에** 포커스를 줄 곳. 누른 버튼이 사라지거나 다른 모양으로 바뀌는 경우다.
+   * 주소 변경은 transition 으로 늦게 그려지므로, 누른 직후가 아니라 조건 지문이 바뀐 뒤에 옮긴다
+   */
+  const refocus = useRef<{ kind: 'chip'; field: PostFilterField } | { kind: 'results' } | null>(null)
+  const searchKey = postListSearchKey(search)
+
+  useEffect(() => {
+    const target = refocus.current
+    if (!target) return
+    refocus.current = null
+    if (target.kind === 'results') {
+      headingRef.current?.focus({ preventScroll: true })
+    } else {
+      filterBarRef.current?.querySelector<HTMLElement>(`[data-filter-field="${target.field}"]`)?.focus()
+    }
+  }, [searchKey])
+
+  // 시트를 연 칩은 적용 뒤 값이 든 칩으로 바뀐다. 시트가 돌려준 포커스가 사라지므로 새 칩으로 옮긴다
+  function applyFromSheet(next: PostListSearch) {
+    if (sheet.field && postListSearchKey(next) !== searchKey) {
+      refocus.current = { kind: 'chip', field: sheet.field }
+    }
+    apply(next)
   }
 
   const total = query.data?.page.totalElements
@@ -93,11 +123,13 @@ export function PostListPage() {
           />
 
           {isWide ? null : (
-            <PostFilterBar
-              search={search}
-              onOpen={(field) => setSheet((s) => ({ open: true, field, key: s.key + 1 }))}
-              onRemove={removeFilter}
-            />
+            <div ref={filterBarRef}>
+              <PostFilterBar
+                search={search}
+                onOpen={(field) => setSheet((s) => ({ open: true, field, key: s.key + 1 }))}
+                onRemove={removeFilter}
+              />
+            </div>
           )}
 
           <section className={styles.results} aria-labelledby="post-list-heading">
@@ -120,9 +152,23 @@ export function PostListPage() {
                 )}
               </p>
               {isWide ? (
-                <ActiveFilterList search={search} onRemove={removeFilter} onClearAll={clearFilters} />
+                <ActiveFilterList
+                  search={search}
+                  onRemove={removeFilter}
+                  onClearAll={clearFilters}
+                  onEmptied={focusResults}
+                />
               ) : hasActiveFilters(search) ? (
-                <Button variant="ghost" size="sm" className={styles.clearAll} onClick={clearFilters}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={styles.clearAll}
+                  onClick={() => {
+                    // 이 버튼은 눌리면 사라진다. 포커스를 결과 제목으로
+                    refocus.current = { kind: 'results' }
+                    clearFilters()
+                  }}
+                >
                   전체 해제
                 </Button>
               ) : null}
@@ -158,7 +204,7 @@ export function PostListPage() {
           focusField={sheet.field}
           onClose={() => setSheet((s) => ({ ...s, open: false }))}
           search={search}
-          onApply={apply}
+          onApply={applyFromSheet}
         />
       )}
     </div>
