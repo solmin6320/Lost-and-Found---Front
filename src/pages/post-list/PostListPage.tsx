@@ -140,7 +140,12 @@ export function PostListPage() {
             <h2 id="post-list-heading" ref={headingRef} tabIndex={-1} className="sr-only">
               검색 결과
             </h2>
-            <p className={styles.count} aria-live="polite" aria-atomic="true">
+            <p
+              className={styles.count}
+              aria-live="polite"
+              aria-atomic="true"
+              data-stale={query.isPlaceholderData || undefined}
+            >
               {total === undefined ? (
                 query.isPending ? (
                   <>

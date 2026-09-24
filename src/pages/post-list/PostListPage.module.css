@@ -67,6 +67,12 @@
   min-width: 4.5rem;
   color: var(--text-body);
   font-size: var(--text-sm);
+  transition: opacity var(--duration-base) var(--ease-out);
+}
+
+/* 조건을 바꿔 다시 부르는 동안 이 숫자는 직전 조건의 것이다. 칩과 어긋나 보이지 않게 목록과 같이 흐린다 */
+.count[data-stale] {
+  opacity: 0.45;
 }
 
 .count strong {
