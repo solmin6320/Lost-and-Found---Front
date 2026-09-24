@@ -6,6 +6,14 @@ export {
   POST_TYPE_LABEL,
   lostFoundDateLabel,
 } from './model/labels'
+export {
+  POST_FILTER_FIELDS,
+  POST_FILTER_FIELD_NAME,
+  hasActiveFilters,
+  toPostListParams,
+  withoutFilters,
+} from './model/postListSearch'
+export type { PostFilterField, PostListSearch } from './model/postListSearch'
 export { StatusBadge } from './ui/StatusBadge'
 export { TypeBadge } from './ui/TypeBadge'
 export {
