@@ -1,4 +1,5 @@
 export { getPosts, normalizePostListParams } from './api/postApi'
+export { postKeys, postListQueryOptions, usePostList } from './model/postQueries'
 export {
   POST_CATEGORIES,
   POST_STATUSES,
