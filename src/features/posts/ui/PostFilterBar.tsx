@@ -1,3 +1,5 @@
+import { useRef } from 'react'
+
 import { cx } from '@/shared/lib/cx'
 import { ChevronDownIcon, CloseIcon } from '@/shared/ui/icons'
 
@@ -24,12 +26,22 @@ interface PostFilterBarProps {
  * "왜 결과가 적지" 를 풀 수 없다. 걸리지 않은 칩끼리의 순서는 그대로다.
  */
 export function PostFilterBar({ search, onOpen, onRemove }: PostFilterBarProps) {
+  const barRef = useRef<HTMLDivElement>(null)
+
+  // 지운 칩은 다른 모양의 버튼으로 바뀐다. 포커스가 문서 처음으로 튀지 않게 같은 필드의 칩에 되돌린다
+  function handleRemove(field: PostFilterField) {
+    onRemove(field)
+    requestAnimationFrame(() => {
+      barRef.current?.querySelector<HTMLElement>(`[data-filter-field="${field}"]`)?.focus()
+    })
+  }
+
   const fields = [...POST_FILTER_FIELDS].sort(
     (a, b) => Number(filterValueLabel(search, b) !== null) - Number(filterValueLabel(search, a) !== null),
   )
 
   return (
-    <div className={styles.bar} role="group" aria-label="필터">
+    <div ref={barRef} className={styles.bar} role="group" aria-label="필터">
       {fields.map((field) => {
         const name = POST_FILTER_FIELD_NAME[field]
         const value = filterValueLabel(search, field)
@@ -40,6 +52,7 @@ export function PostFilterBar({ search, onOpen, onRemove }: PostFilterBarProps) 
               key={field}
               type="button"
               className={styles.trigger}
+              data-filter-field={field}
               aria-haspopup="dialog"
               onClick={() => onOpen(field)}
             >
@@ -54,6 +67,7 @@ export function PostFilterBar({ search, onOpen, onRemove }: PostFilterBarProps) 
             <button
               type="button"
               className={styles.triggerMain}
+              data-filter-field={field}
               aria-haspopup="dialog"
               onClick={() => onOpen(field)}
             >
@@ -63,7 +77,7 @@ export function PostFilterBar({ search, onOpen, onRemove }: PostFilterBarProps) 
               type="button"
               className={styles.triggerClear}
               aria-label={`${name}: ${value} 조건 지우기`}
-              onClick={() => onRemove(field)}
+              onClick={() => handleRemove(field)}
             >
               <CloseIcon />
             </button>
