@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { cx } from '@/shared/lib/cx'
 import { ChevronDownIcon, CloseIcon } from '@/shared/ui/icons'
@@ -7,6 +7,7 @@ import {
   POST_FILTER_FIELDS,
   POST_FILTER_FIELD_NAME,
   filterValueLabel,
+  postListSearchKey,
   type PostFilterField,
   type PostListSearch,
 } from '../model/postListSearch'
@@ -27,13 +28,21 @@ interface PostFilterBarProps {
  */
 export function PostFilterBar({ search, onOpen, onRemove }: PostFilterBarProps) {
   const barRef = useRef<HTMLDivElement>(null)
+  const refocusField = useRef<PostFilterField | null>(null)
+  const searchKey = postListSearchKey(search)
 
-  // 지운 칩은 다른 모양의 버튼으로 바뀐다. 포커스가 문서 처음으로 튀지 않게 같은 필드의 칩에 되돌린다
+  // 지운 칩은 다른 모양의 버튼으로 바뀐다. 바뀐 칩이 그려진 뒤에 같은 필드의 칩으로 포커스를 되돌린다.
+  // 주소 변경은 transition 으로 늦게 그려져, 누른 직후에는 아직 옛 칩이 남아 있다
+  useEffect(() => {
+    const field = refocusField.current
+    if (!field) return
+    refocusField.current = null
+    barRef.current?.querySelector<HTMLElement>(`[data-filter-field="${field}"]`)?.focus()
+  }, [searchKey])
+
   function handleRemove(field: PostFilterField) {
+    refocusField.current = field
     onRemove(field)
-    requestAnimationFrame(() => {
-      barRef.current?.querySelector<HTMLElement>(`[data-filter-field="${field}"]`)?.focus()
-    })
   }
 
   const fields = [...POST_FILTER_FIELDS].sort(
