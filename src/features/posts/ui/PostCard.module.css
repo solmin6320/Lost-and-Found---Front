@@ -201,6 +201,7 @@
   aspect-ratio: 1;
 }
 
-.skeletonPill {
+/* 스켈레톤 기본 반경(6px)보다 앞서야 한다. 불러오는 순서에 기대지 않고 선택자로 이긴다 */
+.skeletonBadges .skeletonPill {
   border-radius: var(--radius-pill);
 }
