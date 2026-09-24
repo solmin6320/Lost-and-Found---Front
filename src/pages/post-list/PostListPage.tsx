@@ -68,7 +68,7 @@ export function PostListPage() {
   const removeFilter = (field: PostFilterField) => apply(withoutFilter(search, field))
   const clearFilters = () => apply(withoutFilters(search))
 
-  // 쪽을 넘기면 목록 첫 줄에서 다시 읽기 시작한다. 스크린리더도 결과 제목으로 옮긴다
+  // 페이지를 넘기면 목록 첫 줄에서 다시 읽기 시작한다. 스크린리더도 결과 제목으로 옮긴다
   function handlePageNavigate() {
     requestAnimationFrame(() => {
       summaryRef.current?.scrollIntoView({ block: 'start' })
@@ -105,7 +105,7 @@ export function PostListPage() {
   const total = query.data?.page.totalElements
 
   return (
-    <div className={styles.page}>
+    <div>
       <h1 className="sr-only">분실물 게시글 목록</h1>
 
       {/*
@@ -305,6 +305,7 @@ function PostListEmpty({
   if (totalElements > 0) {
     return (
       <EmptyState
+        titleAs="h3"
         icon={<SearchIcon />}
         title={`${search.page}페이지에는 글이 없습니다.`}
         description={`조건에 맞는 글 ${totalElements.toLocaleString('ko-KR')}건은 앞 페이지에 있습니다.`}
@@ -316,6 +317,7 @@ function PostListEmpty({
   if (hasActiveFilters(search) || search.keyword) {
     return (
       <EmptyState
+        titleAs="h3"
         icon={<SearchIcon />}
         title="조건에 맞는 글이 없습니다."
         description="검색어나 필터를 바꿔 보세요."
@@ -335,6 +337,7 @@ function PostListEmpty({
 
   return (
     <EmptyState
+      titleAs="h3"
       icon={<CategoryIcon category="ETC" />}
       title="아직 올라온 글이 없습니다."
       description="잃어버렸거나 주운 물건을 올려 보세요."
