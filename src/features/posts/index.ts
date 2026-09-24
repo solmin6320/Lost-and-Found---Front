@@ -6,6 +6,8 @@ export {
   POST_TYPE_LABEL,
   lostFoundDateLabel,
 } from './model/labels'
+export { StatusBadge } from './ui/StatusBadge'
+export { TypeBadge } from './ui/TypeBadge'
 export {
   POST_CATEGORIES,
   POST_STATUSES,
