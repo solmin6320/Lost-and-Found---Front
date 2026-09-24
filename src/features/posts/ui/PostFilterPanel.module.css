@@ -1,0 +1,10 @@
+.panel {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.title {
+  font-size: var(--text-base);
+  font-weight: var(--weight-extrabold);
+  letter-spacing: var(--tracking-normal);
+}
