@@ -108,93 +108,95 @@ export function PostListPage() {
     <div className={styles.page}>
       <h1 className="sr-only">분실물 게시글 목록</h1>
 
+      {/*
+        읽는 순서 = Tab 순서 : 검색 → 필터 → 결과. 검색이 진입점이라 맨 앞이다.
+        넓은 화면에서 필터가 왼쪽 열에 서는 것은 격자 영역으로 옮길 뿐, 문서 순서는 그대로 둔다
+      */}
       <div className={styles.layout}>
-        {isWide ? (
-          <aside className={styles.sidebar}>
-            <PostFilterPanel search={search} onApply={apply} />
-          </aside>
-        ) : null}
-
-        <div className={styles.column}>
+        <div className={styles.search}>
           <PostSearchBar
             key={search.keyword}
             keyword={search.keyword}
             onSearch={(keyword) => update({ keyword })}
           />
+        </div>
 
-          {isWide ? null : (
-            <div ref={filterBarRef}>
-              <PostFilterBar
+        {isWide ? (
+          <aside className={styles.sidebar}>
+            <PostFilterPanel search={search} onApply={apply} />
+          </aside>
+        ) : (
+          <div ref={filterBarRef}>
+            <PostFilterBar
+              search={search}
+              onOpen={(field) => setSheet((s) => ({ open: true, field, key: s.key + 1 }))}
+              onRemove={removeFilter}
+            />
+          </div>
+        )}
+
+        <section className={styles.results} aria-labelledby="post-list-heading">
+          <div ref={summaryRef} className={styles.summary}>
+            <h2 id="post-list-heading" ref={headingRef} tabIndex={-1} className="sr-only">
+              검색 결과
+            </h2>
+            <p className={styles.count} aria-live="polite" aria-atomic="true">
+              {total === undefined ? (
+                query.isPending ? (
+                  <>
+                    <span className="sr-only">게시글을 불러오는 중입니다</span>
+                    <Skeleton shape="text" width="4.5rem" />
+                  </>
+                ) : null
+              ) : (
+                <>
+                  게시글 <strong data-numeric>{total.toLocaleString('ko-KR')}</strong>건
+                </>
+              )}
+            </p>
+            {isWide ? (
+              <ActiveFilterList
                 search={search}
-                onOpen={(field) => setSheet((s) => ({ open: true, field, key: s.key + 1 }))}
                 onRemove={removeFilter}
+                onClearAll={clearFilters}
+                onEmptied={focusResults}
+              />
+            ) : hasActiveFilters(search) ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                className={styles.clearAll}
+                onClick={() => {
+                  // 이 버튼은 눌리면 사라진다. 포커스를 결과 제목으로
+                  refocus.current = { kind: 'results' }
+                  clearFilters()
+                }}
+              >
+                전체 해제
+              </Button>
+            ) : null}
+          </div>
+
+          <PostListBody
+            query={query}
+            search={search}
+            onClearFilters={clearFilters}
+            onClearKeyword={() => update({ keyword: '' })}
+            firstPageHref={hrefForPage(1)}
+          />
+
+          {/* 끝을 넘은 페이지면 "9 / 2" 가 된다. 그때는 빈 상태의 [첫 페이지로]가 나갈 문이다 */}
+          {query.data && query.data.content.length > 0 ? (
+            <div className={styles.pagination}>
+              <Pagination
+                page={search.page}
+                totalPages={query.data.page.totalPages}
+                hrefFor={hrefForPage}
+                onNavigate={handlePageNavigate}
               />
             </div>
-          )}
-
-          <section className={styles.results} aria-labelledby="post-list-heading">
-            <div ref={summaryRef} className={styles.summary}>
-              <h2 id="post-list-heading" ref={headingRef} tabIndex={-1} className="sr-only">
-                검색 결과
-              </h2>
-              <p className={styles.count} aria-live="polite" aria-atomic="true">
-                {total === undefined ? (
-                  query.isPending ? (
-                    <>
-                      <span className="sr-only">게시글을 불러오는 중입니다</span>
-                      <Skeleton shape="text" width="4.5rem" />
-                    </>
-                  ) : null
-                ) : (
-                  <>
-                    게시글 <strong data-numeric>{total.toLocaleString('ko-KR')}</strong>건
-                  </>
-                )}
-              </p>
-              {isWide ? (
-                <ActiveFilterList
-                  search={search}
-                  onRemove={removeFilter}
-                  onClearAll={clearFilters}
-                  onEmptied={focusResults}
-                />
-              ) : hasActiveFilters(search) ? (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={styles.clearAll}
-                  onClick={() => {
-                    // 이 버튼은 눌리면 사라진다. 포커스를 결과 제목으로
-                    refocus.current = { kind: 'results' }
-                    clearFilters()
-                  }}
-                >
-                  전체 해제
-                </Button>
-              ) : null}
-            </div>
-
-            <PostListBody
-              query={query}
-              search={search}
-              onClearFilters={clearFilters}
-              onClearKeyword={() => update({ keyword: '' })}
-              firstPageHref={hrefForPage(1)}
-            />
-
-            {/* 끝을 넘은 페이지면 "9 / 2" 가 된다. 그때는 빈 상태의 [첫 페이지로]가 나갈 문이다 */}
-            {query.data && query.data.content.length > 0 ? (
-              <div className={styles.pagination}>
-                <Pagination
-                  page={search.page}
-                  totalPages={query.data.page.totalPages}
-                  hrefFor={hrefForPage}
-                  onNavigate={handlePageNavigate}
-                />
-              </div>
-            ) : null}
-          </section>
-        </div>
+          ) : null}
+        </section>
       </div>
 
       {isWide ? null : (
