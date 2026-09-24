@@ -1,0 +1,169 @@
+/*
+ * 필터 입력칸 묶음. 좁은 화면의 시트와 넓은 화면의 옆 열이 같이 쓴다.
+ * 선택지는 전부 펼쳐 둔다 — 드롭다운 안에 숨기면 무엇으로 좁힐 수 있는지가 안 보인다.
+ */
+
+.fields {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  display: block;
+  margin-bottom: var(--space-2);
+  padding: 0;
+  color: var(--text-strong);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-snug);
+}
+
+.hint {
+  margin: calc(-1 * var(--space-1)) 0 var(--space-2);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+/* ── 선택지 ── */
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+/* 유형은 셋뿐이고 가장 먼저 고르는 조건이다. 한 줄에 같은 폭으로 */
+.segmented {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.choice {
+  position: relative;
+  display: flex;
+}
+
+/* 진짜 라디오를 위에 투명하게 덮는다. 키보드 화살표 · 스크린리더 · 폼 동작이 그대로 산다 */
+.choiceInput {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.choiceLabel {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap-min);
+  padding-inline: var(--space-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-control);
+  background-color: var(--paper);
+  color: var(--text-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.choiceInput:checked + .choiceLabel {
+  border-color: var(--ink-950);
+  background-color: var(--ink-950);
+  color: var(--paper);
+  font-weight: var(--weight-semibold);
+}
+
+.choiceInput:focus-visible + .choiceLabel {
+  outline: 2px solid var(--ink-950);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .choiceInput:not(:checked):hover + .choiceLabel {
+    border-color: var(--ink-300);
+    color: var(--text-strong);
+  }
+}
+
+/* ── 글자 · 날짜 입력 ── */
+
+.input {
+  width: 100%;
+  min-height: var(--tap-min);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-control);
+  background-color: var(--paper);
+  color: var(--text-strong);
+  /* 16px 아래로 내리면 iOS 가 입력 순간 화면을 확대한다 */
+  font-size: var(--text-base);
+  line-height: var(--leading-snug);
+}
+
+.input::placeholder {
+  color: var(--text-disabled);
+}
+
+.input:focus {
+  border-color: var(--ink-950);
+}
+
+.input[aria-invalid='true'] {
+  border-color: var(--ink-950);
+  border-width: 2px;
+}
+
+.period {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: var(--space-2);
+}
+
+.dateField {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.dateLabel {
+  color: var(--text-body);
+  font-size: var(--text-xs);
+}
+
+.dateInput {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 화면이 먼저 막는 오류. 색이 아니라 아이콘 모양 + 문장으로 알린다 */
+.error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  color: var(--text-strong);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+}
+
+.error svg {
+  flex: none;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-top: 0.0625rem;
+}
