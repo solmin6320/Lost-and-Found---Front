@@ -35,7 +35,7 @@ async function runRefresh(): Promise<string> {
   }
 
   try {
-    const token = await refresher()
+    const token = await withCrossTabLock(refresher)
     setAccessToken(token)
     return token
   } catch (error) {
@@ -47,6 +47,23 @@ async function runRefresh(): Promise<string> {
     }
     throw error
   }
+}
+
+const REFRESH_LOCK_NAME = 'lost-and-found:token-refresh'
+
+/**
+ * 탭끼리도 재발급이 겹치지 않게 줄 세운다.
+ *
+ * 메모리 토큰은 탭마다 따로지만 리프레시 쿠키는 하나를 같이 쓴다. 게시글 여러 개를 새 탭으로
+ * 한꺼번에 열면 탭마다 앱 시작 재발급이 같은 쿠키로 동시에 나가고, 한 탭만 살아남는다.
+ * 줄을 세우면 뒤 탭은 앞 탭이 받아 둔 새 쿠키로 재발급하므로 모두 성공한다.
+ * Web Locks 가 없는 브라우저에서는 탭 안의 단일 비행만 적용된다.
+ */
+function withCrossTabLock<T>(task: () => Promise<T>): Promise<T> {
+  if (typeof navigator === 'undefined' || !('locks' in navigator)) {
+    return task()
+  }
+  return navigator.locks.request(REFRESH_LOCK_NAME, task)
 }
 
 /**
