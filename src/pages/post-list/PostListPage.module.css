@@ -38,7 +38,6 @@
 }
 
 .results {
-  margin-top: var(--space-2);
   container-type: inline-size;
 }
 
