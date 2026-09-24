@@ -98,6 +98,11 @@
   line-height: var(--leading-snug);
 }
 
+/* 격자 칸은 기본으로 내용 폭만큼 버틴다. 0 으로 풀어야 아래 말줄임이 걸린다 */
+.facts > div {
+  min-width: 0;
+}
+
 /* 장소는 100자까지다. 한 줄로 자르고 전체는 상세에서 본다 */
 .place dd {
   overflow: hidden;
