@@ -1,0 +1,186 @@
+/*
+ * 목록 카드 — 스캔이 목적이다. 눈이 멈추는 순서를 고정한다.
+ *   1 썸네일 + 제목   2 유형 · 상태 배지   3 장소 · 분실습득일   4 작성자 · 조회수
+ *
+ * 썸네일을 옆에 두는 가로형이다. 제목이 폭을 넉넉히 가져야 "내 물건인가"를 글로 판단할 수 있다.
+ * 카드는 자기가 놓인 칸의 폭을 보고 썸네일 크기를 정한다(컨테이너 쿼리). 화면 폭이 아니다.
+ */
+
+.card {
+  position: relative;
+  container-type: inline-size;
+  background-color: var(--paper);
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+@container (min-width: 22rem) {
+  .inner {
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+}
+
+@container (min-width: 27rem) {
+  .inner {
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    padding: var(--space-5);
+  }
+}
+
+/* 완료된 글은 이미 끝났다. 칸의 선은 두고 내용만 낮춘다 */
+.card[data-status='DONE'] .inner {
+  opacity: var(--status-done-card-opacity);
+}
+
+.body {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+/* ── 1 제목 ── 두 줄에서 자른다. 띄어쓰기 없는 100자도 칸을 밀어내지 않는다 */
+.title {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-normal);
+  overflow-wrap: anywhere;
+}
+
+.link {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* 제목 링크 하나가 카드 전체를 덮는다. 카드 안에 링크가 하나뿐이라 읽는 이름이 제목으로 짧다 */
+.link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.link:focus-visible {
+  outline: none;
+}
+
+.card:has(.link:focus-visible) {
+  outline: 2px solid var(--ink-950);
+  outline-offset: -2px;
+}
+
+/* ── 2 배지 ── */
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-top: var(--space-2);
+}
+
+/* ── 3 장소 · 날짜 ── */
+.facts {
+  display: grid;
+  gap: 0.125rem;
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+}
+
+/* 장소는 100자까지다. 한 줄로 자르고 전체는 상세에서 본다 */
+.place dd {
+  overflow: hidden;
+  color: var(--text-body);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.date {
+  display: flex;
+  gap: 0.375rem;
+  color: var(--text-body);
+}
+
+.date dt {
+  flex: none;
+  color: var(--text-muted);
+}
+
+/* ── 4 작성자 · 조회수 ── 가장 약하게 */
+.meta {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+}
+
+.nickname {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.views {
+  flex: none;
+}
+
+@media (hover: hover) {
+  .card:hover {
+    background-color: var(--surface-sunken);
+  }
+
+  .card:hover .title {
+    text-decoration: underline;
+    text-decoration-color: var(--ink-300);
+    text-underline-offset: 0.2em;
+  }
+}
+
+/* ── 스켈레톤 — 실제 카드와 같은 격자·같은 높이 ── */
+.skeletonTitle {
+  display: grid;
+  font-size: var(--text-base);
+  line-height: var(--leading-snug);
+}
+
+.skeletonBadges {
+  display: flex;
+  gap: 0.375rem;
+  margin-top: var(--space-2);
+}
+
+.skeletonFacts {
+  display: grid;
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+}
+
+.skeletonMeta {
+  margin-top: var(--space-2);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+}
+
+.skeletonThumb {
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.skeletonPill {
+  border-radius: var(--radius-pill);
+}
