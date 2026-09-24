@@ -1,3 +1,4 @@
+export { getPosts, normalizePostListParams } from './api/postApi'
 export {
   POST_CATEGORIES,
   POST_STATUSES,
