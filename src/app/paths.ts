@@ -16,6 +16,11 @@ export const paths = {
 
   /** [3.2] 로그인 */
   login: '/login',
+  /**
+   * 로그인 후 `redirect` 로 되돌아온다(화면정의서 1.5).
+   * 받는 쪽(로그인 화면)은 `/` 로 시작하고 `//` 가 아닌 내부 경로만 따라가야 한다 — 열린 리다이렉트
+   */
+  loginThenReturn: (redirect: string) => `/login?redirect=${encodeURIComponent(redirect)}`,
   /** [3.1] 회원가입 */
   signup: '/signup',
 
