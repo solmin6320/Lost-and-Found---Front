@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 
 import { createQueryClient } from '@/app/queryClient'
 import { AppRoutes } from '@/app/routes'
+import { AuthProvider } from '@/features/auth'
 
 /**
  * 앱의 가장 바깥. 전역 프로바이더는 전부 여기에 쌓는다.
@@ -19,9 +20,12 @@ export function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
+      {/* 로그아웃·세션 만료 때 쿼리 캐시를 비워야 해서 QueryClientProvider 안쪽에 둔다 */}
+      <AuthProvider>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </AuthProvider>
     </QueryClientProvider>
   )
 }
