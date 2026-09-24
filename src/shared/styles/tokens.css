@@ -138,6 +138,8 @@
   /* ───────── 레이아웃 ───────── */
   --layout-max: 43.75rem;   /* 700px — 목록/상세 본문 폭 */
   --layout-wide: 60rem;     /* 960px — 필터가 옆에 붙는 넓은 화면 */
+  --layout-page: 76rem;     /* 1216px — 헤더와 목록이 함께 쓰는 페이지 폭. 1440에서 양옆이 비지 않게 */
+  --layout-sidebar: 16rem;  /* 256px — 넓은 화면의 필터 열 */
   --gutter: var(--space-4); /* 375px 기준 좌우 여백 */
   --header-h: 3.5rem;       /* 56px */
   --tap-min: 2.75rem;       /* 44px — 터치 대상 최소 */
