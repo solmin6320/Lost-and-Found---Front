@@ -1,66 +1,10 @@
 /*
  * 필터 칩. 라벨에 필드 이름을 넣는다 — `카테고리: 지갑`.
  * 검색어에도 "지갑"을 넣을 수 있어서, 이름이 없으면 무엇이 걸렸는지 구분이 안 된다.
+ * 모든 폭에서 이 한 줄이 필터의 입구다. 걸린 조건은 잉크로 채우고 옆에 [×] 가 붙는다.
  */
 
-/* ── 넓은 화면 : 적용된 조건 목록 ── */
-
-.active {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.removable {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  min-height: 2rem;
-  padding-inline: var(--space-3) var(--space-2);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-pill);
-  background-color: var(--paper);
-  color: var(--text-strong);
-  font-size: var(--text-sm);
-  font-weight: var(--weight-semibold);
-  white-space: nowrap;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* 보이는 높이는 32px, 누를 수 있는 높이는 44px */
-.removable::after {
-  content: '';
-  position: absolute;
-  inset-inline: 0;
-  top: 50%;
-  height: var(--tap-min);
-  transform: translateY(-50%);
-}
-
-.removable svg {
-  width: 1rem;
-  height: 1rem;
-  color: var(--text-muted);
-}
-
-.name {
-  color: var(--text-muted);
-  font-weight: var(--weight-medium);
-}
-
-@media (hover: hover) {
-  .removable:hover {
-    border-color: var(--ink-300);
-  }
-
-  .removable:hover svg {
-    color: var(--text-strong);
-  }
-}
-
-/* ── 좁은 화면 : 필드마다 칩 하나, 누르면 시트 ── */
+/* ── 필드마다 칩 하나, 누르면 시트 ── */
 
 /* 화면 끝까지 밀어 붙여 옆으로 넘긴다. 목록 폭을 밀어내지 않는다 */
 .bar {
@@ -120,8 +64,8 @@ button.trigger::after,
 
 /* 걸려 있는 조건은 잉크를 채운다. 색이 아니라 명암으로 */
 .triggerActive {
-  border-color: var(--ink-950);
-  background-color: var(--ink-950);
+  border-color: var(--ink-900);
+  background-color: var(--ink-900);
   color: var(--paper);
   font-weight: var(--weight-semibold);
 }

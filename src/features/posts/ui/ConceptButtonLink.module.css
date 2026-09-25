@@ -1,0 +1,51 @@
+/* 공통 버튼(`shared/ui/Button`)과 같은 치수 · 같은 눌림. 색만 개념을 따른다 */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-height: var(--tap-min);
+  padding-inline: var(--space-4) var(--space-5);
+  border-radius: var(--radius-control);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  text-decoration: none;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.button svg {
+  flex: none;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.button[data-concept='LOST'] {
+  background-color: var(--lost-face);
+  color: var(--lost-on-face);
+}
+
+.button[data-concept='FOUND'] {
+  background-color: var(--found-face);
+  color: var(--found-on-face);
+}
+
+@media (hover: hover) {
+  .button[data-concept='LOST']:hover {
+    background-color: var(--lost-face-hover);
+  }
+
+  .button[data-concept='FOUND']:hover {
+    background-color: var(--found-face-hover);
+  }
+}

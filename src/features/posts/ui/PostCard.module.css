@@ -1,56 +1,60 @@
 /*
- * 목록 카드 — 스캔이 목적이다. 눈이 멈추는 순서를 고정한다.
- *   1 썸네일 + 제목   2 유형 · 상태 배지   3 장소 · 분실습득일   4 작성자 · 조회수
+ * 피드 카드 — 사진이 위, 글이 아래. 테두리 · 그림자 없이 사진의 사각형이 카드의 모양이 된다.
+ *   1 사진 + 제목   2 유형 배지(사진 위) · 연락중/완료   3 장소 · 분실습득일
  *
- * 썸네일을 옆에 두는 가로형이다. 제목이 폭을 넉넉히 가져야 "내 물건인가"를 글로 판단할 수 있다.
- * 카드는 자기가 놓인 칸의 폭을 보고 썸네일 크기를 정한다(컨테이너 쿼리). 화면 폭이 아니다.
+ * 문서 순서는 글이 먼저다. `order` 로 사진을 위에 올린다 — 스크린리더가 제목부터 읽는다.
+ * 카드는 자기가 놓인 칸의 폭을 보고 제목 크기를 정한다(컨테이너 쿼리). 화면 폭이 아니다.
  */
 
 .card {
   position: relative;
-  container-type: inline-size;
-  background-color: var(--paper);
-  transition: background-color var(--duration-fast) var(--ease-out);
-}
-
-/* 320px(폴드)에서는 썸네일을 줄여 제목 한 줄에 여덟 글자는 들어가게 한다 */
-.inner {
-  display: grid;
-  grid-template-columns: 4.75rem minmax(0, 1fr);
-  align-items: start;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-3);
-  padding: var(--space-4);
+  container-type: inline-size;
+  border-radius: var(--radius-photo);
 }
 
-@container (min-width: 20rem) {
-  .inner {
-    grid-template-columns: 5.5rem minmax(0, 1fr);
+.media {
+  position: relative;
+  order: -1;
+}
+
+/* 사진 위 배지. 왼쪽 위 같은 자리 — 어느 카드든 유형을 같은 곳에서 읽는다 */
+.flags {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  right: var(--space-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  max-width: none;
+  pointer-events: none;
+}
+
+@container (min-width: 13rem) {
+  .flags {
+    top: var(--space-3);
+    left: var(--space-3);
   }
 }
 
-@container (min-width: 24rem) {
-  .inner {
-    grid-template-columns: 6.5rem minmax(0, 1fr);
-    gap: var(--space-4);
+/* 넓은 칸에서는 사진이 커진 만큼 배지도 한 단계 */
+@container (min-width: 15rem) {
+  .flags > span[data-surface] {
+    height: 1.75rem;
+    padding-inline: 0.6875rem;
+    font-size: var(--text-sm);
   }
-}
-
-@container (min-width: 27rem) {
-  .inner {
-    grid-template-columns: 7.5rem minmax(0, 1fr);
-    padding: var(--space-5);
-  }
-}
-
-/* 완료된 글은 이미 끝났다. 칸의 선은 두고 내용만 낮춘다 */
-.card[data-status='DONE'] .inner {
-  opacity: var(--status-done-card-opacity);
 }
 
 .body {
   display: flex;
   min-width: 0;
   flex-direction: column;
+  gap: 0.375rem;
+  padding-inline: 0.125rem;
 }
 
 /* ── 1 제목 ── 두 줄에서 자른다. 띄어쓰기 없는 100자도 칸을 밀어내지 않는다 */
@@ -60,17 +64,17 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
+  color: var(--text-strong);
   font-size: var(--text-base);
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-bold);
   line-height: var(--leading-snug);
-  letter-spacing: var(--tracking-normal);
+  letter-spacing: -0.02em;
   overflow-wrap: anywhere;
 }
 
-/* 칸이 넓으면 썸네일이 커진 만큼 제목도 키운다. 1순위가 그림에 밀리지 않게 */
-@container (min-width: 27rem) {
-  .inner .title,
-  .inner .skeletonTitle {
+@container (min-width: 15rem) {
+  .title,
+  .skeletonTitle {
     font-size: var(--text-lg);
   }
 }
@@ -80,11 +84,13 @@
   text-decoration: none;
 }
 
-/* 제목 링크 하나가 카드 전체를 덮는다. 카드 안에 링크가 하나뿐이라 읽는 이름이 제목으로 짧다 */
+/* 제목 링크 하나가 카드 전체(사진 포함)를 덮는다. 카드 안에 링크가 하나뿐이라 읽는 이름이 제목으로 짧다 */
 .link::after {
   content: '';
   position: absolute;
   inset: 0;
+  z-index: 1;
+  border-radius: inherit;
 }
 
 .link:focus-visible {
@@ -92,34 +98,43 @@
 }
 
 .card:has(.link:focus-visible) {
-  outline: 2px solid var(--ink-950);
-  outline-offset: -2px;
-}
-
-/* ── 2 배지 ── */
-.badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.375rem;
-  margin-top: 0.375rem;
+  outline: 2px solid var(--ink-900);
+  outline-offset: 4px;
 }
 
 /* ── 3 장소 · 날짜 ── */
 .facts {
   display: grid;
   gap: 0.125rem;
-  margin-top: var(--space-2);
   font-size: var(--text-sm);
   line-height: var(--leading-snug);
 }
 
 /* 격자 칸은 기본으로 내용 폭만큼 버틴다. 0 으로 풀어야 아래 말줄임이 걸린다 */
 .facts > div {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
   min-width: 0;
+}
+
+/* 긴 장소가 줄을 다 차지해도 핀은 줄어들지 않는다 */
+.place dt {
+  display: flex;
+  flex: none;
+}
+
+.pin {
+  display: block;
+  flex: none;
+  width: 0.9375rem;
+  height: 0.9375rem;
+  color: var(--text-muted);
 }
 
 /* 장소는 100자까지다. 한 줄로 자르고 전체는 상세에서 본다 */
 .place dd {
+  min-width: 0;
   overflow: hidden;
   color: var(--text-body);
   text-overflow: ellipsis;
@@ -127,9 +142,8 @@
 }
 
 .date {
-  display: flex;
-  gap: var(--space-1);
   color: var(--text-body);
+  font-size: var(--text-xs);
 }
 
 .date dt {
@@ -137,71 +151,53 @@
   color: var(--text-muted);
 }
 
-/* ── 4 작성자 · 조회수 ── 가장 약하게 */
-.meta {
-  display: flex;
-  gap: var(--space-3);
-  margin-top: var(--space-1);
+/*
+ * 완료된 글 — 이미 끝났다. 사진을 흑백으로 낮추고 글자를 한 단계 흐린다.
+ * 카드 전체를 반투명으로 만들지 않는다. 제목이 대비 4.5:1 아래로 떨어진다(ink-500 은 5.6:1)
+ */
+.card[data-status='DONE'] img.visual {
+  filter: grayscale(1) opacity(0.5);
+}
+
+/* 포스터는 색만 뺀다. 반투명으로 낮추면 물건 이름 글자가 3:1 아래로 떨어진다. 그림만 한 단계 옅게 */
+.card[data-status='DONE'] div.visual {
+  filter: grayscale(1);
+}
+
+.card[data-status='DONE'] div.visual svg {
+  opacity: 0.45;
+}
+
+.card[data-status='DONE'] .title,
+.card[data-status='DONE'] .place dd,
+.card[data-status='DONE'] .date {
   color: var(--text-muted);
-  font-size: var(--text-xs);
-  line-height: var(--leading-snug);
-}
-
-.nickname {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.views {
-  flex: none;
 }
 
 @media (hover: hover) {
-  .card:hover {
-    background-color: var(--surface-sunken);
-  }
-
   .card:hover .title {
     text-decoration: underline;
-    text-decoration-color: var(--ink-300);
+    text-decoration-thickness: 1.5px;
     text-underline-offset: 0.2em;
   }
 }
 
-/* ── 스켈레톤 — 실제 카드와 같은 격자·같은 높이 ── */
+/* ── 스켈레톤 — 실제 카드와 같은 격자 · 같은 높이 ── */
+.skeletonMedia {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--radius-photo);
+}
+
 .skeletonTitle {
   display: grid;
   font-size: var(--text-base);
   line-height: var(--leading-snug);
 }
 
-.skeletonBadges {
-  display: flex;
-  gap: 0.375rem;
-  margin-top: 0.375rem;
-}
-
 .skeletonFacts {
   display: grid;
-  margin-top: var(--space-2);
+  gap: 0.125rem;
   font-size: var(--text-sm);
   line-height: var(--leading-snug);
-}
-
-.skeletonMeta {
-  margin-top: var(--space-1);
-  font-size: var(--text-xs);
-  line-height: var(--leading-snug);
-}
-
-.skeletonThumb {
-  width: 100%;
-  aspect-ratio: 1;
-}
-
-/* 스켈레톤 기본 반경(6px)보다 앞서야 한다. 불러오는 순서에 기대지 않고 선택자로 이긴다 */
-.skeletonBadges .skeletonPill {
-  border-radius: var(--radius-pill);
 }

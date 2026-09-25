@@ -34,15 +34,20 @@ export function usePostListSearch() {
     [apply, search],
   )
 
-  /** 다른 쪽으로 가는 주소. 쪽 이동은 링크라 새 탭 열기가 된다 */
-  const hrefForPage = useCallback(
-    (page: number): To => {
-      const params = toSearchParams({ ...search, page })
-      const query = params.toString()
+  /**
+   * 일부만 바꾼 조건의 주소. `update` 와 같이 `page` 를 주지 않으면 1쪽이다.
+   * 이동을 링크로 두면 새 탭 열기 · 주소 복사가 된다(의도 선택 · 쪽 이동)
+   */
+  const hrefWith = useCallback(
+    (patch: Partial<PostListSearch>): To => {
+      const query = toSearchParams({ ...search, page: 1, ...patch }).toString()
       return { search: query ? `?${query}` : '' }
     },
     [search],
   )
 
-  return { search, apply, update, hrefForPage }
+  /** 다른 쪽으로 가는 주소 */
+  const hrefForPage = useCallback((page: number): To => hrefWith({ page }), [hrefWith])
+
+  return { search, apply, update, hrefWith, hrefForPage }
 }

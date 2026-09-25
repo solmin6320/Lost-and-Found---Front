@@ -9,6 +9,8 @@ export const paths = {
   postList: '/',
   /** [4.1] 등록 */
   postCreate: '/posts/new',
+  /** [4.1] 등록 — 유형을 미리 골라 둔다. 목록의 "분실 글 올리기" 같은 동선이 쓴다(SCR-02 가 읽는 것은 단계 4) */
+  postCreateAs: (type: 'LOST' | 'FOUND') => `/posts/new?type=${type}`,
   /** [4.3] 상세 (+ [5.1] 댓글) */
   postDetail: (postId: number | string) => `/posts/${postId}`,
   /** [4.4] 수정 */

@@ -9,7 +9,7 @@ import {
   type PostStatus,
   type PostType,
 } from '../api/types'
-import { POST_CATEGORY_LABEL, POST_STATUS_LABEL, POST_TYPE_LABEL } from './labels'
+import { POST_CATEGORY_LABEL, POST_STATUS_LABEL } from './labels'
 
 /**
  * 목록 화면의 검색 조건 = URL 쿼리스트링.
@@ -30,11 +30,16 @@ export interface PostListSearch {
   page: number
 }
 
-/** 필터 칩 하나가 맡는 조건. 기간은 `from`·`to` 둘을 한 칩으로 묶는다 */
-export type PostFilterField = 'type' | 'category' | 'status' | 'location' | 'period'
+/**
+ * 필터 칩 하나가 맡는 조건. 기간은 `from`·`to` 둘을 한 칩으로 묶는다.
+ *
+ * **유형(`type`)은 필터가 아니다.** 첫 화면의 의도 선택(`잃어버렸어요` / `주웠어요`)이 맡는다.
+ * 칩 · 시트에도 두면 같은 주소 값을 고치는 곳이 둘이 되어, 한쪽을 바꾼 뒤 다른 쪽이 무엇을
+ * 말하는지 헷갈린다. 그래서 `전체 해제` 도 유형은 남긴다 — 검색어처럼 화면 위에 늘 보이는 값이다.
+ */
+export type PostFilterField = 'category' | 'status' | 'location' | 'period'
 
 export const POST_FILTER_FIELDS: readonly PostFilterField[] = [
-  'type',
   'category',
   'status',
   'location',
@@ -43,7 +48,6 @@ export const POST_FILTER_FIELDS: readonly PostFilterField[] = [
 
 /** 칩 라벨의 앞머리. `카테고리: 지갑` — 검색어의 "지갑"과 구분된다 */
 export const POST_FILTER_FIELD_NAME: Record<PostFilterField, string> = {
-  type: '유형',
   category: '카테고리',
   status: '상태',
   location: '장소',
@@ -128,7 +132,7 @@ export function toPostListParams(search: PostListSearch): PostListParams {
   }
 }
 
-/** 필터(검색어 제외)가 하나라도 걸려 있나 */
+/** 필터(검색어 · 유형 제외)가 하나라도 걸려 있나 */
 export function hasActiveFilters(search: PostListSearch): boolean {
   return POST_FILTER_FIELDS.some((field) => filterValueLabel(search, field) !== null)
 }
@@ -136,8 +140,6 @@ export function hasActiveFilters(search: PostListSearch): boolean {
 /** 칩에 쓸 값 라벨. 걸려 있지 않으면 `null` */
 export function filterValueLabel(search: PostListSearch, field: PostFilterField): string | null {
   switch (field) {
-    case 'type':
-      return search.type ? POST_TYPE_LABEL[search.type] : null
     case 'category':
       return search.category ? POST_CATEGORY_LABEL[search.category] : null
     case 'status':
@@ -166,16 +168,15 @@ export function withoutFilter(search: PostListSearch, field: PostFilterField): P
   return next
 }
 
-/** 필터만 전부 지운다. 검색어는 남긴다 — 검색창에 그대로 보이는 값이다 */
+/** 필터만 전부 지운다. 검색어와 유형은 남긴다 — 검색창 · 의도 선택에 그대로 보이는 값이다 */
 export function withoutFilters(search: PostListSearch): PostListSearch {
-  return { ...EMPTY_POST_LIST_SEARCH, keyword: search.keyword }
+  return { ...EMPTY_POST_LIST_SEARCH, keyword: search.keyword, type: search.type }
 }
 
 /* ── 필터 입력 중인 값 ───────────────────────────────── */
 
 /** 필터 입력칸이 들고 있는 값. 적용 전까지는 주소에 싣지 않는다 */
 export interface PostFilterDraft {
-  type?: PostType
   category?: PostCategory
   status?: PostStatus
   location: string
@@ -188,7 +189,6 @@ export const EMPTY_POST_FILTER_DRAFT: PostFilterDraft = { location: '', from: ''
 
 export function draftFromSearch(search: PostListSearch): PostFilterDraft {
   return {
-    type: search.type,
     category: search.category,
     status: search.status,
     location: search.location,
@@ -197,11 +197,11 @@ export function draftFromSearch(search: PostListSearch): PostFilterDraft {
   }
 }
 
-/** 입력값을 조건에 반영한다. 검색어는 그대로 두고 1쪽으로 돌아간다 */
+/** 입력값을 조건에 반영한다. 검색어 · 유형은 그대로 두고 1쪽으로 돌아간다 */
 export function applyDraft(search: PostListSearch, draft: PostFilterDraft): PostListSearch {
   return {
     keyword: search.keyword,
-    type: draft.type,
+    type: search.type,
     category: draft.category,
     status: draft.status,
     location: draft.location.trim().slice(0, LOCATION_MAX_LENGTH),

@@ -1,5 +1,7 @@
 /*
- * 바텀 시트 — 좁은 화면에서 목록을 밀어내지 않고 조건을 고르는 자리.
+ * 시트 — 목록을 밀어내지 않고 조건을 고르는 자리.
+ *   좁은 화면 : 아래에서 올라오는 바텀 시트. 엄지가 닿는 곳에 결정 버튼이 온다
+ *   48rem 이상 : 가운데 다이얼로그. 넓은 화면 바닥에 붙은 시트는 시선이 멀다
  * 실제로 떠 있는 것이라 그림자를 쓴다. 가로 모드 휴대폰(높이 375px 남짓)에서도
  * 잘리지 않게 높이를 dvh 로 묶고 안쪽만 스크롤한다.
  */
@@ -32,9 +34,31 @@
   animation: fade var(--duration-base) var(--ease-out);
 }
 
+@media (min-width: 48rem) {
+  .sheet {
+    inset: 0;
+    width: calc(100% - 2 * var(--space-6));
+    max-width: 34rem;
+    max-height: min(86dvh, 46rem);
+    margin: auto;
+    border-radius: var(--radius-card);
+  }
+
+  .sheet[open] {
+    animation: pop var(--duration-base) var(--ease-out);
+  }
+}
+
 @keyframes rise {
   from {
     transform: translateY(100%);
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
   }
 }
 
@@ -56,7 +80,7 @@
 
 .title {
   font-size: var(--text-lg);
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-extrabold);
 }
 
 .close {

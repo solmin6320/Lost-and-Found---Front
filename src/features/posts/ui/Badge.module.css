@@ -1,8 +1,11 @@
 /*
  * 유형과 상태는 다른 정보다. 같은 축(색)에 올리지 않는다.
- *   유형 — 채운 배지. 화면에서 색을 쓰는 유일한 자리다
+ *   유형 — 채운 배지. 분실 = 마리골드 면 + 진갈색 글자, 습득 = 코발트 면 + 흰 글자
  *   상태 — 외곽선 + 점. 색 없이 라벨 · 점 모양 · 선 진하기로 가른다
- * 둘 다 항상 한글 라벨이 있다. 색각 이상 사용자에게는 두 배지가 같은 회색이다.
+ * 둘 다 항상 한글 라벨이 있다. 색각 이상 사용자에게는 색이 아니라 글자가 구분한다.
+ *
+ * `data-surface="photo"` 는 사진 위에 겹칠 때다. 밝은 사진 · 어두운 사진 어디서도 읽히도록
+ * 배지가 스스로 불투명한 바탕을 가진다.
  */
 
 .type,
@@ -19,6 +22,12 @@
   white-space: nowrap;
 }
 
+.type[data-surface='photo'],
+.status[data-surface='photo'] {
+  height: 1.5rem;
+  font-size: var(--text-xs);
+}
+
 /* ── 유형 ─────────────────────────────── */
 
 .type {
@@ -26,14 +35,20 @@
   font-weight: var(--weight-bold);
 }
 
+.type[data-surface='photo'] {
+  padding-inline: 0.5625rem;
+  /* 같은 색 사진(노란 우비 · 파란 지갑) 위에서도 배지 윤곽이 남게 흰 테를 두른다 */
+  box-shadow: 0 0 0 1.5px rgb(255 255 255 / 0.9);
+}
+
 .type[data-type='LOST'] {
-  background-color: var(--lost-bg);
-  color: var(--lost-fg);
+  background-color: var(--lost-face);
+  color: var(--lost-on-face);
 }
 
 .type[data-type='FOUND'] {
-  background-color: var(--found-bg);
-  color: var(--found-fg);
+  background-color: var(--found-face);
+  color: var(--found-on-face);
 }
 
 /* ── 상태 ─────────────────────────────── */
@@ -77,4 +92,28 @@
 .status[data-status='DONE'] {
   --status-line: var(--status-done-line);
   --status-fg: var(--status-done-fg);
+}
+
+/* 사진 위 — 선만으로는 사진에 묻힌다. 흰 바탕을 깔고, 완료는 잉크를 채워 "끝났다" 를 도장처럼 찍는다 */
+.status[data-surface='photo'] {
+  padding-inline: 0.5rem 0.5625rem;
+  border-color: transparent;
+  background-color: var(--paper);
+  color: var(--ink-900);
+  box-shadow: 0 0 0 1.5px rgb(255 255 255 / 0.9);
+}
+
+.status[data-surface='photo'][data-status='DONE'] {
+  background-color: var(--ink-900);
+  color: var(--paper);
+  box-shadow: none;
+}
+
+/* 완료 도장의 점은 체크로 바꾼다. 빈 원(○)은 어두운 바탕에서 "비어 있음" 으로 읽힌다 */
+.status[data-surface='photo'][data-status='DONE']::before {
+  width: 0.625rem;
+  height: 0.3125rem;
+  border-width: 0 0 2px 2px;
+  border-radius: 0;
+  transform: translateY(-1px) rotate(-45deg);
 }

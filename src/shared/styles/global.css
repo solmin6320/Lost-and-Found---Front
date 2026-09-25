@@ -51,11 +51,11 @@ a:hover {
 
 /*
  * 포커스 링 — 지우지 않는다.
- * 잉크색 2겹(바깥 흰 테)으로 만들어 흰 카드 위에서도, 회청 배경 위에서도 보인다.
- * 색을 쓰지 않으므로 유형 배지의 색 신호와 섞이지 않는다.
+ * 잉크색 2px 을 2px 띄워 그린다. 흰 종이 위에서도, 분실 · 습득 색 면 바깥에서도 보인다.
+ * 색을 쓰지 않으므로 분실 · 습득의 색 신호와 섞이지 않는다.
  */
 :focus-visible {
-  outline: 2px solid var(--ink-950);
+  outline: 2px solid var(--ink-900);
   outline-offset: 2px;
   border-radius: 2px;
 }
@@ -66,8 +66,8 @@ a:hover {
 }
 
 ::selection {
-  background-color: var(--lost-bg);
-  color: var(--ink-950);
+  background-color: var(--lost-200);
+  color: var(--ink-900);
 }
 
 /*
@@ -113,7 +113,7 @@ time,
   left: var(--space-2);
   z-index: var(--z-toast);
   padding: var(--space-2) var(--space-4);
-  background-color: var(--ink-950);
+  background-color: var(--ink-900);
   color: var(--paper);
   border-radius: var(--radius-control);
   transform: translateY(-200%);

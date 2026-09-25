@@ -1,5 +1,5 @@
 /*
- * 필터 입력칸 묶음. 좁은 화면의 시트와 넓은 화면의 옆 열이 같이 쓴다.
+ * 필터 입력칸 묶음. 시트(좁은 화면은 바텀 시트, 넓은 화면은 다이얼로그) 안에 들어간다.
  * 선택지는 전부 펼쳐 둔다 — 드롭다운 안에 숨기면 무엇으로 좁힐 수 있는지가 안 보인다.
  */
 
@@ -82,14 +82,14 @@
  * 선을 안쪽 그림자로 그려 1px → 2px 이 되어도 글자가 밀리지 않는다.
  */
 .choiceInput:checked + .choiceLabel {
-  border-color: var(--ink-950);
-  box-shadow: inset 0 0 0 1px var(--ink-950);
+  border-color: var(--ink-900);
+  box-shadow: inset 0 0 0 1px var(--ink-900);
   color: var(--text-strong);
   font-weight: var(--weight-bold);
 }
 
 .choiceInput:focus-visible + .choiceLabel {
-  outline: 2px solid var(--ink-950);
+  outline: 2px solid var(--ink-900);
   outline-offset: 2px;
 }
 
@@ -120,11 +120,11 @@
 }
 
 .input:focus {
-  border-color: var(--ink-950);
+  border-color: var(--ink-900);
 }
 
 .input[aria-invalid='true'] {
-  border-color: var(--ink-950);
+  border-color: var(--ink-900);
   border-width: 2px;
 }
 

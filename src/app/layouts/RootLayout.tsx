@@ -88,17 +88,20 @@ function HeaderAuth() {
 }
 
 /**
- * 꼬리표. 보관소에서 주운 물건에 다는 이름표다.
- * 사진 없는 '기타' 게시글의 자리표시자와 같은 모양이다.
+ * 꼬리표 두 장. 보관소에서 물건에 다는 이름표다 — 잃어버린 쪽(마리골드)과 주운 쪽(코발트)이 겹친다.
+ * 사진 없는 '기타' 게시글의 포스터와 같은 모양이다.
  */
 function BrandMark() {
+  const tag =
+    'M12 1.8 17.3 6.3a1.6 1.6 0 0 1 .6 1.23V20.4a1.6 1.6 0 0 1-1.6 1.6H7.7a1.6 1.6 0 0 1-1.6-1.6V7.53a1.6 1.6 0 0 1 .6-1.23Z'
   return (
-    <svg className={styles.mark} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <g transform="rotate(-14 12 12)">
-        <path
-          d="M12 1.8 17.3 6.3a1.6 1.6 0 0 1 .6 1.23V20.4a1.6 1.6 0 0 1-1.6 1.6H7.7a1.6 1.6 0 0 1-1.6-1.6V7.53a1.6 1.6 0 0 1 .6-1.23Z"
-          fill="currentColor"
-        />
+    <svg className={styles.mark} viewBox="0 0 30 24" aria-hidden="true" focusable="false">
+      <g transform="translate(7.5 0.4) rotate(14 12 12)">
+        <path d={tag} fill="var(--found-face)" />
+        <circle cx="12" cy="7.9" r="1.65" fill="var(--paper)" />
+      </g>
+      <g transform="translate(-0.5 0.6) rotate(-12 12 12)">
+        <path d={tag} fill="var(--lost-face)" stroke="var(--paper)" strokeWidth="1.6" strokeLinejoin="round" />
         <circle cx="12" cy="7.9" r="1.65" fill="var(--paper)" />
       </g>
     </svg>

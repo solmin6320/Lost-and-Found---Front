@@ -1,6 +1,7 @@
 /*
  * 버튼 — 주 동작(primary)은 잉크를 채우고, 나머지는 선이나 글자만 둔다.
- * 색을 쓰지 않는다. 화면에서 색은 유형 배지 몫이다.
+ * 공통 버튼은 분실 · 습득 색을 쓰지 않는다. 색은 개념에 붙으므로
+ * "분실 글 올리기" 처럼 한쪽 개념에 묶인 버튼만 그 기능 쪽에서 색을 입힌다.
  */
 
 .button {
@@ -17,7 +18,7 @@
   border: 1px solid transparent;
   border-radius: var(--radius-control);
   font-size: var(--text-sm);
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-bold);
   line-height: var(--leading-tight);
   text-decoration: none;
   white-space: nowrap;
@@ -66,7 +67,7 @@
 /* ── 변형 ─────────────────────────────── */
 
 .primary {
-  background-color: var(--ink-950);
+  background-color: var(--ink-900);
   color: var(--paper);
 }
 

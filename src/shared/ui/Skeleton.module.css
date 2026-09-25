@@ -5,7 +5,7 @@
 
 .skeleton {
   display: block;
-  border-radius: var(--radius-thumb);
+  border-radius: var(--radius-sm);
   background-color: var(--ink-100);
   animation: breathe 1.4s ease-in-out infinite;
 }

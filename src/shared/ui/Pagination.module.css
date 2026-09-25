@@ -52,7 +52,7 @@
 }
 
 .page[aria-current='page'] {
-  background-color: var(--ink-950);
+  background-color: var(--ink-900);
   color: var(--paper);
   font-weight: var(--weight-bold);
 }
@@ -85,7 +85,7 @@
 @media (hover: hover) {
   .page:not([aria-current='page']):hover,
   a.step:hover {
-    background-color: var(--paper);
+    background-color: var(--surface-sunken);
     color: var(--text-strong);
   }
 }

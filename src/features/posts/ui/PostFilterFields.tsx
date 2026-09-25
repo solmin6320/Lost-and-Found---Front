@@ -4,15 +4,8 @@ import { cx } from '@/shared/lib/cx'
 import { todayIsoDate } from '@/shared/lib/date'
 import { AlertIcon } from '@/shared/ui/icons'
 
-import {
-  POST_CATEGORIES,
-  POST_STATUSES,
-  POST_TYPES,
-  type PostCategory,
-  type PostStatus,
-  type PostType,
-} from '../api/types'
-import { POST_CATEGORY_LABEL, POST_STATUS_LABEL, POST_TYPE_LABEL } from '../model/labels'
+import { POST_CATEGORIES, POST_STATUSES, type PostCategory, type PostStatus } from '../api/types'
+import { POST_CATEGORY_LABEL, POST_STATUS_LABEL } from '../model/labels'
 import {
   LOCATION_MAX_LENGTH,
   POST_FILTER_FIELD_NAME,
@@ -28,7 +21,8 @@ interface PostFilterFieldsProps {
 }
 
 /**
- * 유형 · 카테고리 · 상태 · 장소 · 기간. 입력만 한다 — 언제 적용할지는 감싼 쪽(시트 · 옆 열)이 정한다.
+ * 카테고리 · 상태 · 장소 · 기간. 입력만 한다 — 언제 적용할지는 감싼 쪽(시트)이 정한다.
+ * 유형(분실/습득)은 여기 없다. 첫 화면의 의도 선택이 맡는다.
  * 각 묶음에 `data-field` 를 달아, 칩에서 시트를 열 때 그 묶음으로 바로 포커스를 옮긴다.
  */
 export function PostFilterFields({ value, onChange, periodError }: PostFilterFieldsProps) {
@@ -38,15 +32,6 @@ export function PostFilterFields({ value, onChange, periodError }: PostFilterFie
 
   return (
     <div className={styles.fields}>
-      <ChoiceGroup
-        field="type"
-        name={`${id}-type`}
-        columns={3}
-        options={POST_TYPES.map((type) => ({ value: type, label: POST_TYPE_LABEL[type] }))}
-        value={value.type}
-        onChange={(type: PostType | undefined) => onChange({ type })}
-      />
-
       <ChoiceGroup
         field="category"
         name={`${id}-category`}
@@ -129,7 +114,7 @@ export function PostFilterFields({ value, onChange, periodError }: PostFilterFie
 }
 
 interface ChoiceGroupProps<T extends string> {
-  field: 'type' | 'category' | 'status'
+  field: 'category' | 'status'
   name: string
   options: { value: T; label: string }[]
   value: T | undefined

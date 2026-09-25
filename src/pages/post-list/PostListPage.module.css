@@ -1,52 +1,65 @@
 /*
- * SCR-01 배치
- *   좁은 화면  : 검색 → 필드별 칩 → 결과 수 → 목록 1열
- *   768 이상   : 목록 2열(목록 칸 폭이 40rem 을 넘으면)
- *   1024 이상  : 필터를 왼쪽 열에 펼쳐 둔다. 1440 에서 양옆이 비지 않게 페이지 폭을 넓게 쓴다
+ * SCR-01 배치 — 모든 폭에서 같은 순서다. 넓어지면 칸이 늘 뿐, 필터가 옆 열로 빠지지 않는다.
+ *   ① 제목 + 의도 선택(두 색 면)   ② 검색 + 필터 칩   ③ 결과 제목 · 수   ④ 사진 피드   ⑤ 페이지 · 다음 행동
+ *   피드 열 수는 결과 칸의 폭으로 정한다(컨테이너 쿼리) : 2열 → 3열(34rem) → 4열(54rem)
  */
 
-.layout {
+/* 칸을 0 까지 줄일 수 있게 둔다. 걸린 칩이 길어져도 칩 줄 안에서 옆으로 넘길 뿐, 페이지 폭을 밀어내지 않는다 */
+.page {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-3);
+}
+
+/* ── ① 첫 화면 ── */
+
+.hero {
+  display: grid;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.title {
+  font-size: clamp(1.5rem, 1.05rem + 1.9vw, 2.5rem);
+  font-weight: var(--weight-extrabold);
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+}
+
+@media (min-width: 40rem) {
+  .hero {
+    gap: var(--space-5);
+    margin-bottom: var(--space-5);
+  }
+}
+
+/* ── ② 검색 · 필터 ── */
+
+.finder {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
 }
 
 /*
- * 필터 열이 두 줄(검색 · 결과)에 걸친다. 결과가 짧아도(빈 상태) 남는 높이는 결과 줄이 받게 해
- * 검색창 아래가 벌어지지 않는다
+ * 넓은 화면에서는 검색과 칩을 한 줄에. 칩 줄이 좁은 화면처럼 화면 끝까지 밀려 나가지 않게
+ * 좌우로 붙였던 여백을 거둔다
  */
 @media (min-width: 64rem) {
-  .layout {
-    grid-template-columns: var(--layout-sidebar) minmax(0, 1fr);
-    grid-template-rows: auto 1fr;
-    grid-template-areas:
-      'sidebar search'
-      'sidebar results';
-    column-gap: var(--space-10);
+  .finder {
+    grid-template-columns: minmax(0, 30rem) minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
   }
 
-  .search {
-    grid-area: search;
-  }
-
-  .results {
-    grid-area: results;
+  .filters > div {
+    margin-inline: 0;
+    padding-inline: 0;
   }
 }
 
-/* 목록이 길어도 필터는 손 닿는 곳에 남는다. 화면보다 길면 안에서 스크롤 */
-.sidebar {
-  grid-area: sidebar;
-  align-self: start;
-  position: sticky;
-  top: calc(var(--header-h) + var(--space-5));
-  max-height: calc(100dvh - var(--header-h) - var(--space-10));
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  /* 포커스 링이 잘리지 않을 만큼 */
-  padding: 3px;
-  margin: -3px;
-}
+/* ── ③ 결과 ── */
 
 .results {
   min-width: 0;
@@ -57,17 +70,34 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2) var(--space-4);
+  gap: var(--space-1) var(--space-3);
   min-height: var(--tap-min);
   margin-bottom: var(--space-3);
   scroll-margin-top: calc(var(--header-h) + var(--space-4));
 }
 
+.heading {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-extrabold);
+  letter-spacing: -0.03em;
+}
+
+.heading:focus-visible {
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
 .count {
-  min-width: 4.5rem;
-  color: var(--text-body);
-  font-size: var(--text-sm);
+  min-width: 2.75rem;
+  color: var(--text-muted);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
   transition: opacity var(--duration-base) var(--ease-out);
+}
+
+.count strong {
+  color: var(--text-strong);
+  font-weight: var(--weight-extrabold);
 }
 
 /* 조건을 바꿔 다시 부르는 동안 이 숫자는 직전 조건의 것이다. 칩과 어긋나 보이지 않게 목록과 같이 흐린다 */
@@ -75,44 +105,31 @@
   opacity: 0.45;
 }
 
-.count strong {
-  color: var(--text-strong);
-  font-size: var(--text-base);
-  font-weight: var(--weight-extrabold);
-}
-
 .clearAll {
   margin-left: auto;
 }
 
-/*
- * 목록판 — 카드마다 그림자를 깔지 않는다. 한 장의 종이를 1px 선으로 나눈다.
- * 칸마다 위·왼쪽 선만 긋고 판 바깥으로 1px 밀어 내 가장자리 선을 숨긴다.
- * 그래서 열 수가 바뀌어도 마지막 줄이 비어도 선이 겹치거나 끊기지 않는다.
- */
-.panel {
-  overflow: hidden;
-  border: var(--hairline);
-  border-radius: var(--radius-card);
-  background-color: var(--paper);
-}
+/* ── ④ 사진 피드 ── */
 
 .grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  margin: -1px 0 0 -1px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6) var(--space-3);
   transition: opacity var(--duration-base) var(--ease-out);
 }
 
-@container (min-width: 40rem) {
+@container (min-width: 34rem) {
   .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: var(--space-4);
   }
 }
 
-.cell {
-  border-top: var(--hairline);
-  border-left: var(--hairline);
+@container (min-width: 54rem) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-8) var(--space-5);
+  }
 }
 
 /* 조건을 바꿔 다시 불러오는 동안 직전 목록 */
@@ -120,6 +137,45 @@
   opacity: 0.45;
 }
 
+/* 비어 있음 · 오류 — 사진 자리에 옅은 면 한 장. 흰 종이 위 빈 자리는 고장처럼 보인다 */
+.stateBox {
+  border-radius: var(--radius-card);
+  background-color: var(--surface-sunken);
+}
+
+/* 빈 상태의 그림은 아이콘보다 크게. 포스터와 같은 그림이다 */
+.emptyWithArt {
+  --state-icon-size: 5.5rem;
+}
+
+.emptyArt {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.emptyArt[data-concept='LOST'] {
+  --art-body: var(--lost-400);
+  --art-shade: var(--lost-500);
+  --art-line: var(--lost-900);
+  --art-light: #fffdf5;
+  --art-hole: var(--surface-sunken);
+}
+
+.emptyArt[data-concept='FOUND'] {
+  --art-body: var(--found-400);
+  --art-shade: var(--found-500);
+  --art-line: var(--found-900);
+  --art-light: #f7f9ff;
+  --art-hole: var(--surface-sunken);
+}
+
+/* ── ⑤ 페이지 · 다음 행동 ── */
+
 .pagination {
-  margin-top: var(--space-6);
+  margin-top: var(--space-10);
+}
+
+.next {
+  margin-top: var(--space-8);
 }

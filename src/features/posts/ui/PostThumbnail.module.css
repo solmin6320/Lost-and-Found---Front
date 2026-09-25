@@ -3,51 +3,86 @@
  * 크기는 부모가 정한다(폭만 주면 높이가 따라온다).
  */
 
-.thumb {
+.frame {
   display: block;
   width: 100%;
   aspect-ratio: 1;
-  border-radius: var(--radius-thumb);
-  background-color: var(--surface-sunken);
+  border-radius: var(--radius-photo);
+}
+
+/* width · height 속성은 비율 힌트다(불러오기 전 자리 잡기). 실제 높이는 aspect-ratio 가 정한다 */
+.photo {
+  height: auto;
   object-fit: cover;
+  /* 불러오는 동안 · 투명한 PNG 뒤 */
+  background-color: var(--surface-sunken);
+  /* 흰 책상 위 흰 물건처럼 밝은 사진이 흰 종이에 녹아 사각형이 사라지지 않게, 사진 위에 아주 옅은 테 */
+  outline: 1px solid rgb(25 27 31 / 0.07);
+  outline-offset: -1px;
 }
 
 /*
- * 사진이 없을 때. 회색 네모가 아니라 "무엇을 잃어버렸는지"를 먼저 보여준다.
- * 색은 쓰지 않는다 — 옆의 유형 배지가 이 화면의 유일한 색이어야 한다.
+ * 사진이 없을 때 — 포스터.
+ * 유형 색의 연한 바탕 위에 칠한 그림을 크게 두고, 왼쪽 아래에 물건 이름을 찍는다.
+ * 그림의 몸통이 분실은 밝은 마리골드, 습득은 어두운 코발트라 흑백에서도 두 갈래가 갈린다.
  */
-.placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.125rem;
-  box-shadow: inset 0 0 0 1px var(--border-subtle);
-  color: var(--ink-500);
+.poster {
+  position: relative;
+  overflow: hidden;
   container-type: inline-size;
 }
 
-.icon {
-  width: 44%;
-  height: auto;
+.poster[data-type='LOST'] {
+  --art-body: var(--lost-400);
+  --art-shade: var(--lost-500);
+  --art-line: var(--lost-900);
+  --art-light: #fffdf5;
+  --art-hole: var(--lost-100);
+
+  background-color: var(--lost-100);
+  color: var(--lost-900);
 }
 
+.poster[data-type='FOUND'] {
+  --art-body: var(--found-400);
+  --art-shade: var(--found-500);
+  --art-line: var(--found-900);
+  --art-light: #f7f9ff;
+  --art-hole: var(--found-100);
+
+  background-color: var(--found-100);
+  color: var(--found-900);
+}
+
+.art {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70%;
+  height: auto;
+  transform: translate(-50%, -53%) rotate(var(--tilt, 0deg));
+}
+
+/* 물건 이름. 사진 대신 이 글자가 "무엇을 잃어버렸나" 를 먼저 말한다 */
 .label {
-  color: var(--ink-500);
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-medium);
-  line-height: var(--leading-snug);
-  letter-spacing: 0;
+  position: absolute;
+  left: 7%;
+  bottom: 6%;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-extrabold);
+  line-height: 1;
+  letter-spacing: -0.02em;
   white-space: nowrap;
 }
 
-/* 아주 작게 놓이면 글자를 빼고 그림만 */
-@container (max-width: 4.5rem) {
+@container (min-width: 13rem) {
   .label {
-    display: none;
+    font-size: var(--text-base);
   }
+}
 
-  .icon {
-    width: 56%;
+@container (min-width: 17rem) {
+  .label {
+    font-size: var(--text-lg);
   }
 }

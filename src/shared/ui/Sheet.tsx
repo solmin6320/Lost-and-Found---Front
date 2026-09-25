@@ -16,7 +16,8 @@ interface SheetProps {
 }
 
 /**
- * 모달 바텀 시트. 네이티브 `<dialog>` 의 `showModal()` 을 쓴다 —
+ * 모달 시트. 좁은 화면은 바텀 시트, 넓은 화면은 가운데 다이얼로그 모양이다(CSS 만 다르다).
+ * 네이티브 `<dialog>` 의 `showModal()` 을 쓴다 —
  * 바깥이 inert 가 되어 포커스가 갇히고, Esc 로 닫힌다. 닫으면 열었던 버튼으로 포커스를 돌려준다.
  */
 export function Sheet({ open, onClose, title, children, footer, initialFocus }: SheetProps) {
@@ -60,7 +61,7 @@ export function Sheet({ open, onClose, title, children, footer, initialFocus }: 
     dialog.addEventListener('close', handleClose)
     return () => {
       dialog.removeEventListener('close', handleClose)
-      // 열린 채로 사라지면(넓은 화면으로 바뀜 등) 잠근 스크롤을 풀어 둔다
+      // 열린 채로 사라지면(다른 화면으로 이동 등) 잠근 스크롤을 풀어 둔다
       document.documentElement.style.overflow = ''
     }
   }, [])
