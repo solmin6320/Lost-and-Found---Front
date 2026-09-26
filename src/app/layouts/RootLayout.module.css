@@ -60,10 +60,10 @@
 }
 
 /*
- * [글 올리기] — 폭에 따라 무게가 달라진다.
- *   24rem 미만  [+] 만. 보이는 칸 36px 정사각 · 누르는 면적 44px. 글자는 화면에서만 숨긴다(이름은 남는다)
- *   48rem 미만  선만 두른 버튼. 첫 화면의 두 색 면이 주인공이다
- *   48rem 이상  잉크를 채운 주 버튼. 넓은 화면에서는 헤더가 멀어 다투지 않는다
+ * 헤더 오른쪽 — [글 올리기] · 설정 · 로그인/계정. 320px 에서도 한 줄에 들어가게 폭마다 무게를 바꾼다.
+ *   24rem 미만  [+] 만(보이는 칸 36px · 누르는 면적 44px). 글자는 화면에서만 숨긴다(이름은 남는다)
+ *   48rem 미만  [글 올리기]는 선만 두른 버튼 — 첫 화면의 두 색 면이 주인공이다. 설정은 톱니만
+ *   48rem 이상  [글 올리기]는 잉크를 채운 주 버튼, 설정은 글자도 둔다
  * 공통 버튼의 같은 무게 선택자와 겨루지 않게 `.actions` 를 앞에 붙인다
  */
 .actions .create {
@@ -80,7 +80,8 @@
   height: var(--icon-md);
 }
 
-.createLabel {
+.createLabel,
+.settingsLabel {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -89,15 +90,39 @@
   white-space: nowrap;
 }
 
+/* 설정 — 테두리 없는 44px 정사각. 지금 설정 화면이면 옅은 면을 깐다 */
+.settings {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+  border-radius: var(--radius-sm);
+  color: var(--text-strong);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  text-decoration: none;
+}
+
+.settings svg {
+  flex: none;
+  width: var(--icon-md);
+  height: var(--icon-md);
+}
+
+.settings[aria-current='page'] {
+  background-color: var(--surface-sunken);
+}
+
+@media (hover: hover) {
+  .settings:hover {
+    background-color: var(--surface-sunken);
+  }
+}
+
 @media (min-width: 24rem) {
-  .wordmark {
-    font-size: var(--text-lg);
-  }
-
-  .actions {
-    gap: var(--space-2);
-  }
-
   .actions .create {
     width: auto;
     padding-inline: var(--space-3) var(--space-4);
@@ -126,11 +151,38 @@
   }
 }
 
+/* 워드마크를 키우고 간격을 넓히는 것은 한 줄에 다 들어가는 폭부터 */
+@media (min-width: 30rem) {
+  .wordmark {
+    font-size: var(--text-lg);
+  }
+
+  .actions {
+    gap: var(--space-2);
+  }
+}
+
 @media (min-width: 48rem) {
   .actions .create {
     border-color: transparent;
     background-color: var(--action);
     color: var(--on-action);
+  }
+
+  .settings {
+    padding-inline: var(--space-2) var(--space-3);
+  }
+
+  .settingsLabel {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+  }
+
+  .settingsTip {
+    display: none;
   }
 }
 

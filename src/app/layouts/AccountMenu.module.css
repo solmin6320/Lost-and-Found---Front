@@ -43,7 +43,8 @@
   white-space: nowrap;
 }
 
-@media (min-width: 30rem) {
+/* 헤더에 톱니가 함께 서므로 닉네임은 36rem 부터. 그보다 좁으면 사람 아이콘 + 펼침 표시만 */
+@media (min-width: 36rem) {
   .name {
     display: inline;
   }

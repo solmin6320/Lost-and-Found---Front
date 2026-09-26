@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#ffffff" />
+    <!--
+      화면 모드(밝게 · 어둡게)를 첫 화면 전에 붙인다. 깜빡임을 막으려고 동기로 불러온다.
+      인라인 스크립트는 CSP(script-src 'self')가 막으므로 같은 출처의 파일로 둔다 — public/theme-init.js
+    -->
+    <script src="/theme-init.js"></script>
     <meta name="description" content="잃어버린 물건과 주운 물건을 한곳에서 찾습니다." />
 
     <!--

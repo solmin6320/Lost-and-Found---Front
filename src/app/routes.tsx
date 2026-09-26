@@ -1,7 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 
 import { RootLayout } from '@/app/layouts/RootLayout'
-import { AccountSettingsPage } from '@/pages/account/AccountSettingsPage'
 import { LoginPage } from '@/pages/login/LoginPage'
 import { MyPage } from '@/pages/my-page/MyPage'
 import { NotFoundPage } from '@/pages/not-found/NotFoundPage'
@@ -9,6 +8,7 @@ import { PostCreatePage } from '@/pages/post-create/PostCreatePage'
 import { PostDetailPage } from '@/pages/post-detail/PostDetailPage'
 import { PostEditPage } from '@/pages/post-edit/PostEditPage'
 import { PostListPage } from '@/pages/post-list/PostListPage'
+import { SettingsPage } from '@/pages/settings/SettingsPage'
 import { SignupPage } from '@/pages/signup/SignupPage'
 
 /**
@@ -23,7 +23,7 @@ import { SignupPage } from '@/pages/signup/SignupPage'
  * | /login              | 로그인                  | [3.2]        |
  * | /signup             | 회원가입                | [3.1]        |
  * | /me                 | 마이페이지(내 글)       | [6.1]        |
- * | /me/settings        | 내 정보 조회·수정       | [3.6] [3.7]  |
+ * | /settings           | 설정(화면 모드 · 프로필 · 비밀번호) | [3.6] [3.7] |
  * | 그 외               | 없는 화면               | 9장          |
  *
  * 화면이 없는 기능은 동작으로만 존재한다.
@@ -52,7 +52,7 @@ export function AppRoutes() {
         <Route path="/signup" element={<SignupPage />} />
 
         <Route path="/me" element={<MyPage />} />
-        <Route path="/me/settings" element={<AccountSettingsPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
 
         <Route path="*" element={<NotFoundPage />} />
       </Route>

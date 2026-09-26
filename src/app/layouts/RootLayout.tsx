@@ -1,10 +1,10 @@
-import { Link, Outlet, useLocation } from 'react-router-dom'
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 
 import { paths } from '@/app/paths'
 import { useAuth } from '@/features/auth'
 import { cx } from '@/shared/lib/cx'
 import { ButtonLink } from '@/shared/ui/Button'
-import { Plus } from '@/shared/ui/icons'
+import { Gear, Plus } from '@/shared/ui/icons'
 import tip from '@/shared/ui/Tooltip.module.css'
 
 import { AccountMenu } from './AccountMenu'
@@ -13,8 +13,9 @@ import styles from './RootLayout.module.css'
 /**
  * 모든 화면이 공유하는 껍데기. 헤더 · 본문 · 푸터.
  *
- * 헤더는 셋만 둔다 — 로고(목록으로), [글 올리기], 로그인/계정.
+ * 헤더는 넷만 둔다 — 로고(목록으로), [글 올리기], 설정(톱니), 로그인/계정.
  * [글 올리기]는 비로그인에게도 보인다. 수정·삭제와 달리 서비스로 들어오는 동선이다(SCR-01).
+ * 설정도 비로그인에게 보인다 — 화면 모드는 누구나 바꾼다(SCR-08).
  */
 export function RootLayout() {
   return (
@@ -32,6 +33,7 @@ export function RootLayout() {
 
           <div className={styles.actions}>
             <CreatePostLink />
+            <SettingsLink />
             <HeaderAuth />
           </div>
         </div>
@@ -66,6 +68,22 @@ function CreatePostLink() {
         글 올리기
       </span>
     </ButtonLink>
+  )
+}
+
+/**
+ * 설정 — 톱니. 휴대폰 폭에서는 아이콘만(이름은 aria-label, 마우스 · 키보드에는 이름표), 48rem 이상은 글자도 둔다.
+ * 지금 설정 화면이면 NavLink 가 `aria-current="page"` 를 붙인다
+ */
+function SettingsLink() {
+  return (
+    <NavLink to={paths.settings} className={cx(styles.settings, tip.host)} aria-label="설정">
+      <Gear />
+      <span className={styles.settingsLabel}>설정</span>
+      <span className={cx(tip.tip, styles.settingsTip)} aria-hidden="true">
+        설정
+      </span>
+    </NavLink>
   )
 }
 

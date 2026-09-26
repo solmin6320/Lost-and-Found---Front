@@ -1,0 +1,67 @@
+/*
+ * SCR-08 설정 — 읽는 화면이라 700px(--layout-max) 한 줄로 좁힌다. 넓은 화면에서도 폼이 끝까지 늘어나지 않는다.
+ * 섹션은 카드로 감싸지 않고 가는 선으로 나눈다 — 떠 있는 것이 아니다.
+ */
+
+.page {
+  display: grid;
+  gap: var(--space-8);
+  max-width: var(--layout-max);
+  margin-inline: auto;
+}
+
+.title {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-extrabold);
+  letter-spacing: var(--tracking-tight);
+}
+
+@media (min-width: 40rem) {
+  .title {
+    font-size: var(--text-3xl);
+  }
+}
+
+.section {
+  display: grid;
+  gap: var(--space-5);
+  padding-top: var(--space-6);
+  border-top: var(--hairline);
+}
+
+/* 제목 바로 아래 첫 섹션에는 선을 긋지 않는다 — 제목이 이미 나눈다 */
+.title + .section {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.heading {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-extrabold);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* 비로그인 — 옅은 면 한 장. 글과 버튼이 넓으면 한 줄, 좁으면 두 줄 */
+.signIn {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-4);
+  padding: var(--space-5);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-sunken);
+}
+
+.signInText {
+  flex: 1 1 14rem;
+  color: var(--text-body);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-snug);
+}
+
+.stateBox {
+  border-radius: var(--radius-md);
+  background-color: var(--surface-sunken);
+}

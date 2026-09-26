@@ -1,0 +1,360 @@
+/*
+ * 화면 모드 두 칸. 칸 안의 미리보기는 `data-theme` 으로 그 모드의 토큰을 연다(tokens.css 3장).
+ * 좁은 화면(320)에서도 나란히 둔다 — 두 모드를 옆에 놓고 비교하는 것이 이 선택의 핵심이다.
+ */
+
+.picker {
+  display: grid;
+  gap: var(--space-3);
+  /* 넓은 화면에서 미리보기가 실제 화면만큼 커지지 않게. 아래 폼들과 비슷한 폭으로 묶는다 */
+  max-width: 32rem;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+/* ── 칸 ── */
+
+.option {
+  position: relative;
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background-color: var(--surface);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out);
+}
+
+/* 진짜 라디오를 칸 전체에 투명하게 덮는다. 화살표 키 · 스크린리더 · 폼 동작이 그대로 산다 */
+.input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* 고른 칸 — 테두리를 두 배로. 색이 아니라 굵기로 먼저 읽힌다 */
+.option:has(.input:checked) {
+  border-color: var(--selected-line);
+  box-shadow: inset 0 0 0 1px var(--selected-line);
+}
+
+.option:has(.input:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .option:not(:has(.input:checked)):hover {
+    border-color: var(--border-hover);
+  }
+}
+
+.caption {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  min-height: var(--space-8);
+  padding-inline: var(--space-1);
+  color: var(--text-body);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+}
+
+.captionIcon {
+  flex: none;
+  width: var(--icon-md);
+  height: var(--icon-md);
+}
+
+.captionText {
+  min-width: 0;
+  flex: 1;
+}
+
+.option:has(.input:checked) .caption {
+  color: var(--text-strong);
+  font-weight: var(--weight-bold);
+}
+
+/* 체크 — 고르지 않은 칸은 빈 동그라미, 고른 칸은 잉크를 채우고 체크를 넣는다 */
+.check {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+  border-radius: var(--radius-pill);
+  box-shadow: inset 0 0 0 1.5px var(--border-strong);
+  color: transparent;
+}
+
+.check svg {
+  width: var(--icon-xs);
+  height: var(--icon-xs);
+}
+
+.option:has(.input:checked) .check {
+  background-color: var(--action);
+  box-shadow: none;
+  color: var(--on-action);
+}
+
+/* ── 한 줄 안내 + 기기 설정 따르기 ── */
+
+.status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-3);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+}
+
+/* 글자 버튼. 보이는 크기는 작아도 누르는 높이는 44px */
+.follow {
+  position: relative;
+  min-height: var(--tap-min);
+  color: var(--text-strong);
+  font-weight: var(--weight-semibold);
+  text-decoration: underline;
+  text-decoration-color: var(--border-hover);
+  text-underline-offset: 0.25em;
+}
+
+.follow:focus-visible {
+  border-radius: var(--radius-xs);
+}
+
+@media (hover: hover) {
+  .follow:hover {
+    text-decoration-color: currentColor;
+  }
+}
+
+/* ══ 미리보기 — 목록 화면 축소 도식. 단위는 미리보기 폭(cqi) 기준이라 칸 크기가 달라도 비율이 같다 ══ */
+
+.preview {
+  display: block;
+  container-type: inline-size;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px var(--border-subtle);
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  /* 카드 첫 줄의 사진 가운데에서 자른다 — 화면이 아래로 이어진다는 것이 보이고, 잘린 글자 줄이 삐져나오지 않는다 */
+  aspect-ratio: 100 / 80;
+  overflow: hidden;
+  background-color: var(--surface);
+}
+
+/* 도식 조각은 전부 span 이다(label 안에는 글자 요소만 둘 수 있다). 기본을 block 으로 — 선택자 무게 0 이라 아래 규칙이 이긴다 */
+:where(.screen span) {
+  display: block;
+}
+
+.bar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  height: 12cqi;
+  padding-inline: 5cqi;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.brand,
+.barActions {
+  display: flex;
+  align-items: center;
+  gap: 1.4cqi;
+}
+
+.tagLost,
+.tagFound {
+  width: 2.6cqi;
+  height: 3.8cqi;
+  border-radius: 0.6cqi;
+}
+
+.tagLost {
+  background-color: var(--lost-face);
+  transform: rotate(-12deg);
+}
+
+.tagFound {
+  margin-left: -1.4cqi;
+  background-color: var(--found-face);
+  transform: rotate(14deg);
+}
+
+.word {
+  width: 16cqi;
+  height: 2.8cqi;
+  margin-left: 0.6cqi;
+  border-radius: 0.8cqi;
+  background-color: var(--text-strong);
+}
+
+.chipSquare,
+.chipRound,
+.chipWide {
+  height: 5.4cqi;
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+}
+
+.chipSquare {
+  width: 5.4cqi;
+  border-radius: 1.2cqi;
+}
+
+.chipRound {
+  width: 5.4cqi;
+  border-radius: 50%;
+}
+
+.chipWide {
+  width: 11cqi;
+  border-radius: 1.2cqi;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 3.4cqi;
+  padding: 5cqi;
+}
+
+.headline {
+  width: 60cqi;
+  height: 4.6cqi;
+  border-radius: 1cqi;
+  background-color: var(--text-strong);
+}
+
+.panels {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2.2cqi;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 20cqi;
+  padding: 3.2cqi;
+  border-radius: 2.4cqi;
+}
+
+.panel[data-concept='LOST'] {
+  background-color: var(--lost-face-wide);
+  color: var(--lost-on-face);
+}
+
+.panel[data-concept='FOUND'] {
+  background-color: var(--found-face-wide);
+  color: var(--found-on-face);
+}
+
+.panelLine,
+.panelLineShort {
+  border-radius: 0.8cqi;
+  background-color: currentColor;
+}
+
+.panelLine {
+  width: 72%;
+  height: 3cqi;
+}
+
+.panelLineShort {
+  width: 46%;
+  height: 2cqi;
+  opacity: 0.75;
+}
+
+.search {
+  height: 7.6cqi;
+  border-radius: 1.6cqi;
+  background-color: var(--surface-sunken);
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3cqi 2.2cqi;
+}
+
+.tile {
+  display: grid;
+  gap: 1.2cqi;
+}
+
+.photo {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 1.8cqi;
+}
+
+.photo[data-kind='LOST'] {
+  background-color: var(--lost-poster);
+}
+
+.photo[data-kind='FOUND'] {
+  background-color: var(--found-poster);
+}
+
+.photo[data-kind='PHOTO'] {
+  background-color: var(--skeleton);
+}
+
+/* 포스터 속 그림 자리 — 몸통 색 네모 하나 */
+.photo[data-kind='LOST']::after,
+.photo[data-kind='FOUND']::after {
+  content: '';
+  position: absolute;
+  inset: 30% 24% 26%;
+  border-radius: 1.4cqi;
+  transform: rotate(-6deg);
+}
+
+.photo[data-kind='LOST']::after {
+  background-color: var(--lost-art-body);
+}
+
+.photo[data-kind='FOUND']::after {
+  background-color: var(--found-art-body);
+}
+
+.tileLine,
+.tileLineShort {
+  height: 2cqi;
+  border-radius: 0.6cqi;
+}
+
+.tileLine {
+  width: 92%;
+  background-color: var(--text-strong);
+}
+
+.tileLineShort {
+  width: 62%;
+  background-color: var(--text-muted);
+}

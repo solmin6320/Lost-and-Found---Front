@@ -28,6 +28,17 @@ export const paths = {
 
   /** [6.1] 마이페이지 — 내가 쓴 글 */
   myPage: '/me',
-  /** [3.6] [3.7] 내 정보 조회·수정 */
-  accountSettings: '/me/settings',
+  /**
+   * 설정 — 화면 모드(누구나) + [3.7] 프로필 · [3.6] 닉네임 · 비밀번호(로그인했을 때만).
+   * 비로그인도 화면 모드를 바꿀 수 있어야 해서 `/me` 아래가 아니다
+   */
+  settings: '/settings',
 } as const
+
+/**
+ * 로그인 화면에 넘기는 안내 한 줄(`navigate(paths.login, { state })`).
+ * 로그인 화면이 폼 위에 띄운다 — 단계 2(SCR-05)에서 읽는다
+ */
+export interface LoginNoticeState {
+  notice: string
+}

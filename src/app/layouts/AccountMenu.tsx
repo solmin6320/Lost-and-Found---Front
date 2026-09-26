@@ -95,8 +95,8 @@ export function AccountMenu({ me, onLogout }: AccountMenuProps) {
               </NavLink>
             </li>
             <li>
-              <NavLink className={styles.item} to={paths.accountSettings} onClick={close}>
-                내 정보
+              <NavLink className={styles.item} to={paths.settings} onClick={close}>
+                설정
               </NavLink>
             </li>
           </ul>
