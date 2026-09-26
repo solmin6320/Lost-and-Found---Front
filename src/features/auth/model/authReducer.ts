@@ -19,6 +19,8 @@ export type AuthAction =
   | { type: 'LOGGED_OUT' }
   /** 서버가 세션을 끝냈다(재발급 거절) */
   | { type: 'SESSION_EXPIRED' }
+  /** 내 정보가 새 값으로 바뀌었다(닉네임 변경 등). `members/me` 캐시에서 온다 */
+  | { type: 'ME_UPDATED'; me: MemberResponse }
 
 export const initialAuthState: AuthState = { status: 'unknown', me: null }
 
@@ -39,5 +41,12 @@ export function authReducer(state: AuthState, action: AuthAction): AuthState {
     case 'LOGGED_OUT':
     case 'SESSION_EXPIRED':
       return anonymous
+
+    case 'ME_UPDATED':
+      // 로그인한 그 회원의 값만 받는다. 캐시에서 온 값으로 로그인 상태를 새로 만들지 않는다
+      if (state.status !== 'authenticated' || state.me.id !== action.me.id) {
+        return state
+      }
+      return { status: 'authenticated', me: action.me }
   }
 }

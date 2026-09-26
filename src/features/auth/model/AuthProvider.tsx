@@ -1,12 +1,13 @@
-import { useQueryClient } from '@tanstack/react-query'
+import { hashKey, useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useReducer, type ReactNode } from 'react'
 
+import { meQueryOptions, type PasswordUpdateRequest } from '@/features/members'
 import { subscribeSessionExpired } from '@/shared/lib/http'
 
 import type { LoginRequest } from '../api/types'
 import { AuthContext, type AuthContextValue } from './AuthContext'
 import { authReducer, initialAuthState } from './authReducer'
-import { restoreSession, signIn, signOut } from './session'
+import { restoreSession, signIn, signOut, updatePasswordAndEndSession } from './session'
 
 /**
  * 로그인 상태를 앱 전체에 준다. `QueryClientProvider` 안쪽에 둔다(로그아웃 시 캐시를 비운다).
@@ -54,7 +55,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'LOGGED_OUT' })
   }, [queryClient])
 
-  const value = useMemo<AuthContextValue>(() => ({ ...state, login, logout }), [state, login, logout])
+  // 닉네임을 바꾸는 쪽(features/members)은 auth 를 모른다. members 가 auth 를 부르면 서로를 import 하게 된다.
+  // 대신 여기서 members/me 캐시를 지켜보다가 새 값이 들어오면 헤더의 닉네임을 맞춘다
+  useEffect(() => {
+    const meQueryHash = hashKey(meQueryOptions().queryKey)
+
+    return queryClient.getQueryCache().subscribe((event) => {
+      if (event.type !== 'updated' || event.action.type !== 'success' || event.query.queryHash !== meQueryHash) {
+        return
+      }
+      const me = queryClient.getQueryData(meQueryOptions().queryKey)
+      if (me) {
+        dispatch({ type: 'ME_UPDATED', me })
+      }
+    })
+  }, [queryClient])
+
+  // 서버가 모든 기기의 리프레시 토큰을 지웠다. 이 기기도 즉시 로그아웃된 것처럼 동작한다(화면정의서 SCR-08).
+  // "세션 만료"(subscribeSessionExpired)로 보내지 않는다 — 로그인 화면에 띄울 문장이 다르다
+  const updatePassword = useCallback(
+    async (body: PasswordUpdateRequest) => {
+      await updatePasswordAndEndSession(body)
+      queryClient.clear()
+      dispatch({ type: 'LOGGED_OUT' })
+    },
+    [queryClient],
+  )
+
+  const value = useMemo<AuthContextValue>(
+    () => ({ ...state, login, logout, updatePassword }),
+    [state, login, logout, updatePassword],
+  )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

@@ -1,4 +1,9 @@
-import { getMe, type MemberResponse } from '@/features/members'
+import {
+  getMe,
+  updatePassword,
+  type MemberResponse,
+  type PasswordUpdateRequest,
+} from '@/features/members'
 import { clearAccessToken, refreshAccessToken, setAccessToken } from '@/shared/lib/http'
 
 import { login, logout } from '../api/authApi'
@@ -68,4 +73,22 @@ export async function signOut(): Promise<void> {
   } finally {
     clearAccessToken()
   }
+}
+
+/**
+ * 비밀번호를 바꾸고 이 기기의 토큰을 비운다. **로그아웃 API 는 부르지 않는다.**
+ *
+ * 성공했다면 서버가 이미 리프레시 토큰을 지웠다(모든 기기 로그아웃). 로그아웃 API 를 또 부르면
+ * 할 일이 없는 요청이고, 그 요청이 실패해도 결과는 같다. 브라우저에 쿠키는 남지만
+ * 다음 재발급이 `REFRESH_TOKEN_MISMATCH` 로 거절돼 조용히 비로그인이 된다.
+ *
+ * 액세스 토큰은 서버에서 최대 5분 더 유효하지만 기다리지 않고 지금 버린다.
+ * 그냥 두면 "모든 기기에서 로그아웃됩니다"라고 알린 뒤에도 화면은 로그인 상태로 남았다가,
+ * 5분 안의 아무 시점에 재발급이 거절되며 "로그인이 만료됐습니다"로 끊긴다.
+ *
+ * 실패하면(`PASSWORD_MISMATCH` 등) 그대로 던지고 토큰은 건드리지 않는다.
+ */
+export async function updatePasswordAndEndSession(body: PasswordUpdateRequest): Promise<void> {
+  await updatePassword(body)
+  clearAccessToken()
 }
