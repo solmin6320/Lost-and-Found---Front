@@ -12,14 +12,13 @@
   text-align: center;
 }
 
-/* 크기는 쓰는 쪽이 `--state-icon-size` 로 키울 수 있다(목록 빈 상태의 그림) */
 .icon {
   display: grid;
   place-items: center;
-  width: var(--state-icon-size, 3rem);
-  height: var(--state-icon-size, 3rem);
+  width: var(--icon-state);
+  height: var(--icon-state);
   margin-bottom: var(--space-2);
-  color: var(--ink-400);
+  color: var(--text-disabled);
 }
 
 .icon svg {

@@ -1,7 +1,7 @@
 import { Link, type LinkProps } from 'react-router-dom'
 
 import { cx } from '@/shared/lib/cx'
-import { PlusIcon } from '@/shared/ui/icons'
+import { Plus } from '@/shared/ui/icons'
 
 import type { PostType } from '../api/types'
 import styles from './ConceptButtonLink.module.css'
@@ -18,7 +18,7 @@ interface ConceptButtonLinkProps extends LinkProps {
 export function ConceptButtonLink({ concept, className, children, ...rest }: ConceptButtonLinkProps) {
   return (
     <Link className={cx(styles.button, className)} data-concept={concept} {...rest}>
-      <PlusIcon />
+      <Plus />
       {children}
     </Link>
   )

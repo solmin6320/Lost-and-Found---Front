@@ -9,6 +9,7 @@ export {
 export {
   POST_FILTER_FIELDS,
   POST_FILTER_FIELD_NAME,
+  POST_LIST_PAGE_SIZE,
   hasActiveFilters,
   postListSearchKey,
   toPostListParams,

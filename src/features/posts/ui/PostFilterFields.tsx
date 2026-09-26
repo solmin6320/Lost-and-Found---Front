@@ -2,7 +2,7 @@ import { useId, type CSSProperties } from 'react'
 
 import { cx } from '@/shared/lib/cx'
 import { todayIsoDate } from '@/shared/lib/date'
-import { AlertIcon } from '@/shared/ui/icons'
+import { WarningCircle } from '@/shared/ui/icons'
 
 import { POST_CATEGORIES, POST_STATUSES, type PostCategory, type PostStatus } from '../api/types'
 import { POST_CATEGORY_LABEL, POST_STATUS_LABEL } from '../model/labels'
@@ -104,7 +104,7 @@ export function PostFilterFields({ value, onChange, periodError }: PostFilterFie
         </div>
         {periodError ? (
           <p id={errorId} className={styles.error} role="alert">
-            <AlertIcon />
+            <WarningCircle />
             {periodError}
           </p>
         ) : null}

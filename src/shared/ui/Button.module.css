@@ -2,6 +2,7 @@
  * 버튼 — 주 동작(primary)은 잉크를 채우고, 나머지는 선이나 글자만 둔다.
  * 공통 버튼은 분실 · 습득 색을 쓰지 않는다. 색은 개념에 붙으므로
  * "분실 글 올리기" 처럼 한쪽 개념에 묶인 버튼만 그 기능 쪽에서 색을 입힌다.
+ * 눌림은 전역 한 가지(잠깐 옅어짐)를 따른다 — global.css
  */
 
 .button {
@@ -16,29 +17,23 @@
   min-height: var(--button-h);
   padding-inline: var(--space-4);
   border: 1px solid transparent;
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-sm);
   font-size: var(--text-sm);
   font-weight: var(--weight-bold);
   line-height: var(--leading-tight);
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
   transition:
     background-color var(--duration-fast) var(--ease-out),
     border-color var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out);
+    opacity var(--duration-fast) var(--ease-out);
 }
 
 .button svg {
   flex: none;
-  width: 1.125rem;
-  height: 1.125rem;
-}
-
-.button:active:not(:disabled) {
-  transform: translateY(1px);
+  width: var(--icon-sm);
+  height: var(--icon-sm);
 }
 
 .button:disabled {
@@ -67,17 +62,17 @@
 /* ── 변형 ─────────────────────────────── */
 
 .primary {
-  background-color: var(--ink-900);
-  color: var(--paper);
+  background-color: var(--action);
+  color: var(--on-action);
 }
 
 .primary:disabled {
-  background-color: var(--ink-200);
-  color: var(--ink-500);
+  background-color: var(--action-disabled);
+  color: var(--on-action-disabled);
 }
 
 .secondary {
-  background-color: var(--paper);
+  background-color: var(--surface);
   border-color: var(--border-strong);
   color: var(--text-strong);
 }
@@ -99,11 +94,11 @@
 /* 터치 기기에서는 탭한 뒤 hover 색이 들러붙는다. 마우스에서만 */
 @media (hover: hover) {
   .primary:hover:not(:disabled) {
-    background-color: var(--ink-700);
+    background-color: var(--action-hover);
   }
 
   .secondary:hover:not(:disabled) {
-    border-color: var(--ink-300);
+    border-color: var(--border-hover);
     background-color: var(--surface-sunken);
   }
 

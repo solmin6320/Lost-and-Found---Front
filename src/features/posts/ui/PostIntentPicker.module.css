@@ -1,6 +1,7 @@
 /*
  * 의도 선택 — 이 화면에서 유일하게 크게 색을 쓰는 자리다.
  * 분실 색(마리골드)은 `잃어버렸어요`, 습득 색(코발트)은 `주웠어요`. 색은 사용자가 한 일에 붙는다.
+ * 넓은 면이라 마리골드는 채도를 한 단계 낮춘 `--lost-face-wide` 를 쓴다(오래 봐도 눈이 덜 지친다).
  *
  * 좁은 화면에서도 두 개를 나란히 둔다. 위아래로 쌓으면 첫 화면에서 피드가 밀려난다.
  * 높이는 문구 세 줄 남짓으로 묶는다 — 375px 첫 화면에 카드 윗부분이 보여야 한다.
@@ -9,7 +10,7 @@
 .intents {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.625rem;
+  gap: var(--space-2);
 }
 
 @media (min-width: 40rem) {
@@ -26,36 +27,32 @@
 /* ── 색 : 개념(concept) × 상태(state) ── */
 
 .item[data-concept='LOST'] {
-  --intent-face: var(--lost-face);
-  --intent-face-hover: var(--lost-face-hover);
+  --intent-face: var(--lost-face-wide);
+  --intent-face-hover: var(--lost-face-wide-hover);
   --intent-ink: var(--lost-on-face);
-  --intent-art: var(--lost-500);
   --intent-line: transparent;
 }
 
 .item[data-concept='FOUND'] {
-  --intent-face: var(--found-face);
-  --intent-face-hover: var(--found-face-hover);
+  --intent-face: var(--found-face-wide);
+  --intent-face-hover: var(--found-face-wide-hover);
   --intent-ink: var(--found-on-face);
-  --intent-art: var(--found-600);
   --intent-line: transparent;
 }
 
 /* 다른 쪽을 골랐을 때 — 연한 면으로 물러난다. 누르면 바로 갈아탈 수 있게 선택지 모양은 그대로 */
 .item[data-concept='LOST'][data-state='off'] {
-  --intent-face: var(--lost-050);
-  --intent-face-hover: var(--lost-100);
-  --intent-ink: var(--lost-700);
-  --intent-art: var(--lost-100);
-  --intent-line: var(--lost-200);
+  --intent-face: var(--lost-tint);
+  --intent-face-hover: var(--lost-tint-hover);
+  --intent-ink: var(--lost-text);
+  --intent-line: var(--lost-tint-line);
 }
 
 .item[data-concept='FOUND'][data-state='off'] {
-  --intent-face: var(--found-050);
-  --intent-face-hover: var(--found-100);
-  --intent-ink: var(--found-700);
-  --intent-art: var(--found-100);
-  --intent-line: var(--found-200);
+  --intent-face: var(--found-tint);
+  --intent-face-hover: var(--found-tint-hover);
+  --intent-ink: var(--found-text);
+  --intent-line: var(--found-tint-line);
 }
 
 /* ── 선택지 ── */
@@ -67,28 +64,19 @@
   justify-content: space-between;
   gap: var(--space-3);
   min-height: 7.25rem;
-  padding: var(--space-4) var(--space-4) 0.9375rem;
-  overflow: hidden;
-  border-radius: var(--radius-panel);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
   background-color: var(--intent-face);
-  box-shadow: inset 0 0 0 1.5px var(--intent-line);
+  box-shadow: inset 0 0 0 1px var(--intent-line);
   color: var(--intent-ink);
   text-decoration: none;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
   transition:
     background-color var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out);
+    opacity var(--duration-fast) var(--ease-out);
 }
 
 .choice:focus-visible {
   outline-offset: 3px;
-  border-radius: var(--radius-panel);
-}
-
-/* 누른 것에 반응한다 — 살짝 눌린다 */
-.choice:active {
-  transform: scale(0.985);
 }
 
 @media (hover: hover) {
@@ -97,19 +85,13 @@
   }
 }
 
-.label,
-.hint {
-  position: relative;
-  z-index: 1;
-}
-
 /* 좁은 칸에서는 "물건을 / 잃어버렸어요" 두 줄로 끊는다. 두 선택지의 줄 수가 같아야 아래 한 줄이 나란히 선다 */
 .label {
   display: grid;
   font-size: clamp(1.125rem, 0.75rem + 3.2cqi, 1.875rem);
   font-weight: var(--weight-extrabold);
-  line-height: 1.25;
-  letter-spacing: -0.03em;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
 }
 
 /* 좁은 칸에서는 "주워진 물건 / 12건 보기" 두 줄. 두 선택지가 같은 자리에서 끊겨 나란히 선다 */
@@ -118,7 +100,7 @@
   justify-items: start;
   font-size: var(--text-xs);
   font-weight: var(--weight-semibold);
-  line-height: 1.4;
+  line-height: var(--leading-snug);
   font-variant-numeric: tabular-nums;
 }
 
@@ -127,7 +109,7 @@
   display: inline-block;
   width: 1.75em;
   height: 0.85em;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   background-color: currentColor;
   vertical-align: -0.05em;
   opacity: 0.25;
@@ -149,32 +131,6 @@
   }
 }
 
-/* 귀퉁이 꼬리표 — 면보다 한 단계 진한 같은 색. 글자와 겹쳐도 대비가 남는 명도로 골랐다 */
-.art {
-  position: absolute;
-  right: -0.75rem;
-  bottom: -1.5rem;
-  width: 5rem;
-  height: 5rem;
-  color: var(--intent-art);
-  transform: rotate(-16deg);
-  pointer-events: none;
-}
-
-.item[data-concept='FOUND'] .art {
-  transform: rotate(14deg);
-}
-
-/* 넓은 칸에서는 칸 폭을 따라 커진다. 확대 200%(칸 300px 남짓)에서 글자를 덮지 않을 만큼 */
-@container (min-width: 17rem) {
-  .art {
-    right: -0.5rem;
-    bottom: clamp(-3.5rem, -10cqi, -1.5rem);
-    width: clamp(6rem, 30cqi, 11rem);
-    height: clamp(6rem, 30cqi, 11rem);
-  }
-}
-
 /* ── 고른 쪽의 [×] — 전체로 돌아가는 길. 선택지 링크 안에 넣지 않고 옆에 겹친다(링크 안 링크 금지) ── */
 .reset {
   position: absolute;
@@ -186,9 +142,8 @@
   width: 2rem;
   height: 2rem;
   border-radius: var(--radius-pill);
-  background-color: var(--paper);
-  color: var(--ink-900);
-  -webkit-tap-highlight-color: transparent;
+  background-color: var(--surface);
+  color: var(--text-strong);
 }
 
 /* 보이는 원은 32px, 누르는 면적은 44px */
@@ -199,9 +154,8 @@
 }
 
 .reset svg {
-  width: 1.125rem;
-  height: 1.125rem;
-  stroke-width: 2.25;
+  width: var(--icon-sm);
+  height: var(--icon-sm);
 }
 
 @container (min-width: 17rem) {

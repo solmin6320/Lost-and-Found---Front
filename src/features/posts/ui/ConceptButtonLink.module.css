@@ -1,4 +1,4 @@
-/* 공통 버튼(`shared/ui/Button`)과 같은 치수 · 같은 눌림. 색만 개념을 따른다 */
+/* 공통 버튼(`shared/ui/Button`)과 같은 치수 · 같은 눌림(전역). 색만 개념을 따른다 */
 
 .button {
   display: inline-flex;
@@ -7,27 +7,21 @@
   gap: var(--space-1);
   min-height: var(--tap-min);
   padding-inline: var(--space-4) var(--space-5);
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-sm);
   font-size: var(--text-sm);
   font-weight: var(--weight-bold);
   line-height: var(--leading-tight);
   text-decoration: none;
   white-space: nowrap;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
   transition:
     background-color var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out);
+    opacity var(--duration-fast) var(--ease-out);
 }
 
 .button svg {
   flex: none;
-  width: 1.125rem;
-  height: 1.125rem;
-}
-
-.button:active {
-  transform: translateY(1px);
+  width: var(--icon-sm);
+  height: var(--icon-sm);
 }
 
 .button[data-concept='LOST'] {

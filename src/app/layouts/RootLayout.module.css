@@ -19,14 +19,14 @@
   position: sticky;
   top: 0;
   z-index: var(--z-header);
-  background-color: var(--paper);
+  background-color: var(--surface);
   border-bottom: var(--hairline);
 }
 
 .headerInner {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-2);
   height: var(--header-h);
   max-width: var(--layout-page);
   margin-inline: auto;
@@ -36,11 +36,11 @@
   display: inline-flex;
   flex: none;
   align-items: center;
-  gap: 0.375rem;
+  gap: var(--space-1-5);
   min-height: var(--tap-min);
   font-size: var(--text-base);
   font-weight: var(--weight-extrabold);
-  letter-spacing: -0.04em;
+  letter-spacing: var(--tracking-tight);
   color: var(--text-strong);
   text-decoration: none;
   white-space: nowrap;
@@ -49,7 +49,7 @@
 .mark {
   flex: none;
   width: 1.875rem;
-  height: 1.5rem;
+  height: var(--icon-lg);
 }
 
 .actions {
@@ -59,24 +59,34 @@
   margin-left: auto;
 }
 
-.create {
-  gap: var(--space-1);
-  padding-inline: var(--space-3) var(--space-4);
+/*
+ * [글 올리기] — 폭에 따라 무게가 달라진다.
+ *   24rem 미만  [+] 만. 보이는 칸 36px 정사각 · 누르는 면적 44px. 글자는 화면에서만 숨긴다(이름은 남는다)
+ *   48rem 미만  선만 두른 버튼. 첫 화면의 두 색 면이 주인공이다
+ *   48rem 이상  잉크를 채운 주 버튼. 넓은 화면에서는 헤더가 멀어 다투지 않는다
+ * 공통 버튼의 같은 무게 선택자와 겨루지 않게 `.actions` 를 앞에 붙인다
+ */
+.actions .create {
+  width: 2.25rem;
+  padding-inline: 0;
 }
 
-.create svg {
-  width: 1rem;
-  height: 1rem;
+.actions .create::after {
+  inset-inline: calc((var(--tap-min) - 2.25rem) / -2);
 }
 
-.login {
-  min-width: var(--header-auth-w);
+.actions .create svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
 }
 
-.authPending {
-  display: block;
-  width: var(--header-auth-w);
-  height: var(--tap-min);
+.createLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 @media (min-width: 24rem) {
@@ -87,6 +97,58 @@
   .actions {
     gap: var(--space-2);
   }
+
+  .actions .create {
+    width: auto;
+    padding-inline: var(--space-3) var(--space-4);
+  }
+
+  .actions .create::after {
+    inset-inline: 0;
+  }
+
+  .actions .create svg {
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+  }
+
+  .createLabel {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+  }
+
+  /* 글자가 보이면 이름표는 필요 없다 */
+  .createTip {
+    display: none;
+  }
+}
+
+@media (min-width: 48rem) {
+  .actions .create {
+    border-color: transparent;
+    background-color: var(--action);
+    color: var(--on-action);
+  }
+}
+
+@media (min-width: 48rem) and (hover: hover) {
+  .actions .create:hover {
+    border-color: transparent;
+    background-color: var(--action-hover);
+  }
+}
+
+.login {
+  min-width: var(--header-auth-w);
+}
+
+.authPending {
+  display: block;
+  width: var(--header-auth-w);
+  height: var(--tap-min);
 }
 
 .main {
@@ -100,7 +162,7 @@
 
 .footer {
   border-top: var(--hairline);
-  background-color: var(--paper);
+  background-color: var(--surface);
   padding-bottom: env(safe-area-inset-bottom);
 }
 

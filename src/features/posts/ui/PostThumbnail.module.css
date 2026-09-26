@@ -1,13 +1,15 @@
 /*
  * 1:1 고정. 세로 사진이 와도 카드 높이가 흔들리지 않는다.
  * 크기는 부모가 정한다(폭만 주면 높이가 따라온다).
+ * 옅은 테두리는 여기 두지 않는다 — 완료 글은 사진에 필터를 거는데, 테두리까지 같이 흐려진다.
+ * 감싼 쪽(목록 카드의 `.media`)이 필터 밖에서 두른다.
  */
 
 .frame {
   display: block;
   width: 100%;
   aspect-ratio: 1;
-  border-radius: var(--radius-photo);
+  border-radius: var(--radius-md);
 }
 
 /* width · height 속성은 비율 힌트다(불러오기 전 자리 잡기). 실제 높이는 aspect-ratio 가 정한다 */
@@ -16,15 +18,12 @@
   object-fit: cover;
   /* 불러오는 동안 · 투명한 PNG 뒤 */
   background-color: var(--surface-sunken);
-  /* 흰 책상 위 흰 물건처럼 밝은 사진이 흰 종이에 녹아 사각형이 사라지지 않게, 사진 위에 아주 옅은 테 */
-  outline: 1px solid rgb(25 27 31 / 0.07);
-  outline-offset: -1px;
 }
 
 /*
  * 사진이 없을 때 — 포스터.
  * 유형 색의 연한 바탕 위에 칠한 그림을 크게 두고, 왼쪽 아래에 물건 이름을 찍는다.
- * 그림의 몸통이 분실은 밝은 마리골드, 습득은 어두운 코발트라 흑백에서도 두 갈래가 갈린다.
+ * 그림 색은 tokens.css 의 `--lost-art-*` · `--found-art-*` 가 준다(밝게 · 어둡게 모두).
  */
 .poster {
   position: relative;
@@ -33,25 +32,25 @@
 }
 
 .poster[data-type='LOST'] {
-  --art-body: var(--lost-400);
-  --art-shade: var(--lost-500);
-  --art-line: var(--lost-900);
-  --art-light: #fffdf5;
-  --art-hole: var(--lost-100);
+  --art-body: var(--lost-art-body);
+  --art-shade: var(--lost-art-shade);
+  --art-line: var(--lost-art-line);
+  --art-light: var(--lost-art-light);
+  --art-hole: var(--lost-art-hole);
 
-  background-color: var(--lost-100);
-  color: var(--lost-900);
+  background-color: var(--lost-poster);
+  color: var(--lost-poster-ink);
 }
 
 .poster[data-type='FOUND'] {
-  --art-body: var(--found-400);
-  --art-shade: var(--found-500);
-  --art-line: var(--found-900);
-  --art-light: #f7f9ff;
-  --art-hole: var(--found-100);
+  --art-body: var(--found-art-body);
+  --art-shade: var(--found-art-shade);
+  --art-line: var(--found-art-line);
+  --art-light: var(--found-art-light);
+  --art-hole: var(--found-art-hole);
 
-  background-color: var(--found-100);
-  color: var(--found-900);
+  background-color: var(--found-poster);
+  color: var(--found-poster-ink);
 }
 
 .art {
@@ -71,7 +70,7 @@
   font-size: var(--text-sm);
   font-weight: var(--weight-extrabold);
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--tracking-tight);
   white-space: nowrap;
 }
 

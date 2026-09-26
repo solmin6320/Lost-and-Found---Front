@@ -3,6 +3,7 @@
  *   1 사진 + 제목   2 유형 배지(사진 위) · 연락중/완료   3 장소 · 분실습득일
  *
  * 문서 순서는 글이 먼저다. `order` 로 사진을 위에 올린다 — 스크린리더가 제목부터 읽는다.
+ * 배지는 글 칸 안(제목 바로 뒤)에 있지만 카드 기준으로 띄워 사진 왼쪽 위에 놓는다.
  * 카드는 자기가 놓인 칸의 폭을 보고 제목 크기를 정한다(컨테이너 쿼리). 화면 폭이 아니다.
  */
 
@@ -12,20 +13,45 @@
   flex-direction: column;
   gap: var(--space-3);
   container-type: inline-size;
-  border-radius: var(--radius-photo);
+  border-radius: var(--radius-md);
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+/* 눌림 — 전역과 같은 한 가지(잠깐 옅어짐)를 카드 전체에. 제목 링크만 따로 옅어지지 않게 막는다 */
+.card:has(.link:active) {
+  opacity: var(--press-opacity);
+}
+
+.link:active {
+  opacity: 1;
 }
 
 .media {
   position: relative;
   order: -1;
+  border-radius: var(--radius-md);
 }
 
-/* 사진 위 배지. 왼쪽 위 같은 자리 — 어느 카드든 유형을 같은 곳에서 읽는다 */
+/*
+ * 사진의 옅은 테 — 흰 책상 위 흰 물건처럼 밝은 사진이 종이에 녹아 사각형이 사라지지 않게.
+ * 사진 바깥(.media)에 두어 완료 글의 흑백 필터를 타지 않는다. 포스터는 색 바탕이 이미 사각형이라 두르지 않는다
+ */
+.media:has(img)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--media-edge);
+  pointer-events: none;
+}
+
+/* 사진 위 배지. 왼쪽 위 같은 자리 — 어느 카드든 유형을 같은 곳에서 읽는다. 사진이 카드 맨 위라 카드 기준으로 띄운다 */
 .flags {
   position: absolute;
   top: var(--space-2);
   left: var(--space-2);
   right: var(--space-2);
+  z-index: 2;
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-1);
@@ -44,7 +70,6 @@
 @container (min-width: 15rem) {
   .flags > span[data-surface] {
     height: 1.75rem;
-    padding-inline: 0.6875rem;
     font-size: var(--text-sm);
   }
 }
@@ -53,8 +78,8 @@
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: 0.375rem;
-  padding-inline: 0.125rem;
+  gap: var(--space-1-5);
+  padding-inline: var(--space-0-5);
 }
 
 /* ── 1 제목 ── 두 줄에서 자른다. 띄어쓰기 없는 100자도 칸을 밀어내지 않는다 */
@@ -68,7 +93,7 @@
   font-size: var(--text-base);
   font-weight: var(--weight-bold);
   line-height: var(--leading-snug);
-  letter-spacing: -0.02em;
+  letter-spacing: var(--tracking-tight);
   overflow-wrap: anywhere;
 }
 
@@ -98,14 +123,14 @@
 }
 
 .card:has(.link:focus-visible) {
-  outline: 2px solid var(--ink-900);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 4px;
 }
 
 /* ── 3 장소 · 날짜 ── */
 .facts {
   display: grid;
-  gap: 0.125rem;
+  gap: var(--space-0-5);
   font-size: var(--text-sm);
   line-height: var(--leading-snug);
 }
@@ -114,7 +139,7 @@
 .facts > div {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: var(--space-1);
   min-width: 0;
 }
 
@@ -127,8 +152,8 @@
 .pin {
   display: block;
   flex: none;
-  width: 0.9375rem;
-  height: 0.9375rem;
+  width: var(--icon-sm);
+  height: var(--icon-sm);
   color: var(--text-muted);
 }
 
@@ -152,20 +177,12 @@
 }
 
 /*
- * 완료된 글 — 이미 끝났다. 사진을 흑백으로 낮추고 글자를 한 단계 흐린다.
- * 카드 전체를 반투명으로 만들지 않는다. 제목이 대비 4.5:1 아래로 떨어진다(ink-500 은 5.6:1)
+ * 완료된 글 — 이미 끝났다. 사진 · 포스터를 흑백으로 낮추고 대비를 조금 줄인다. 글자는 한 단계 흐린다.
+ * 반투명으로 만들지 않는다 — 흰 사진은 빈 칸처럼 보이고, 제목이 대비 4.5:1 아래로 떨어진다(ink-500 은 5.6:1).
+ * 옅은 테는 필터 밖(.media)에 있어 그대로 남는다
  */
-.card[data-status='DONE'] img.visual {
-  filter: grayscale(1) opacity(0.5);
-}
-
-/* 포스터는 색만 뺀다. 반투명으로 낮추면 물건 이름 글자가 3:1 아래로 떨어진다. 그림만 한 단계 옅게 */
-.card[data-status='DONE'] div.visual {
-  filter: grayscale(1);
-}
-
-.card[data-status='DONE'] div.visual svg {
-  opacity: 0.45;
+.card[data-status='DONE'] .visual {
+  filter: grayscale(1) contrast(0.88);
 }
 
 .card[data-status='DONE'] .title,
@@ -186,7 +203,7 @@
 .skeletonMedia {
   width: 100%;
   aspect-ratio: 1;
-  border-radius: var(--radius-photo);
+  border-radius: var(--radius-md);
 }
 
 .skeletonTitle {
@@ -197,7 +214,7 @@
 
 .skeletonFacts {
   display: grid;
-  gap: 0.125rem;
+  gap: var(--space-0-5);
   font-size: var(--text-sm);
   line-height: var(--leading-snug);
 }

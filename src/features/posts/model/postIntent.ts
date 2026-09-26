@@ -71,12 +71,16 @@ export function intentShowing(type: PostType | undefined): PostIntent | undefine
 }
 
 /**
- * 선택지 아래 한 줄의 뒷부분. 건수를 모르면(불러오는 중 · 실패) 숫자 대신 "모두".
- * 고른 쪽은 "보기" 가 "보는 중" 으로 바뀐다 — 지금 무엇이 걸려 있는지 선택지 자신이 말한다
+ * 선택지 아래 한 줄의 뒷부분. 고른 쪽은 "보기" 가 "보는 중" 으로 바뀐다 — 지금 무엇이 걸려 있는지 선택지 자신이 말한다.
+ *   숫자      → "12건 보기"
+ *   undefined → "모두 보기"   건수를 모른다(불러오는 중 · 실패)
+ *   null      → "보기"        검색어 · 필터가 걸려 있다. 유형 전체 건수는 지금 목록 수와 달라 헷갈리므로 뺀다
  */
-export function intentHintTail(count: number | undefined, active: boolean): string {
+export function intentHintTail(count: number | null | undefined, active: boolean): string {
+  const verb = active ? '보는 중' : '보기'
+  if (count === null) return verb
   const amount = count === undefined ? '모두' : `${count.toLocaleString('ko-KR')}건`
-  return `${amount} ${active ? '보는 중' : '보기'}`
+  return `${amount} ${verb}`
 }
 
 /** 유형을 걸지 않은 목록의 제목 */

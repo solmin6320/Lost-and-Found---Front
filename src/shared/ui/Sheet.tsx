@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, type MouseEvent, type PointerEvent, type ReactNode } from 'react'
 
-import { CloseIcon } from './icons'
+import { X } from './icons'
 import styles from './Sheet.module.css'
 
 interface SheetProps {
@@ -96,7 +96,7 @@ export function Sheet({ open, onClose, title, children, footer, initialFocus }: 
           aria-label="닫기"
           onClick={() => dialogRef.current?.close()}
         >
-          <CloseIcon />
+          <X />
         </button>
       </div>
       <div className={styles.body}>{children}</div>

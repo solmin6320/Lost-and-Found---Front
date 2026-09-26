@@ -2,8 +2,10 @@ import { Link, Outlet, useLocation } from 'react-router-dom'
 
 import { paths } from '@/app/paths'
 import { useAuth } from '@/features/auth'
+import { cx } from '@/shared/lib/cx'
 import { ButtonLink } from '@/shared/ui/Button'
-import { PlusIcon } from '@/shared/ui/icons'
+import { Plus } from '@/shared/ui/icons'
+import tip from '@/shared/ui/Tooltip.module.css'
 
 import { AccountMenu } from './AccountMenu'
 import styles from './RootLayout.module.css'
@@ -46,15 +48,23 @@ export function RootLayout() {
   )
 }
 
-/** 비로그인이면 로그인을 거쳐 등록 화면으로 돌아온다 */
+/**
+ * 비로그인이면 로그인을 거쳐 등록 화면으로 돌아온다.
+ * 좁은 화면(24rem 미만)에서는 [+] 만 남긴다. 글자는 화면에서만 숨겨 이름으로 남고, 이름표(툴팁)가 대신 보인다.
+ * 휴대폰 폭에서는 선만 두른 버튼이다 — 첫 화면의 두 색 면(의도 선택)과 무게를 다투지 않게.
+ */
 function CreatePostLink() {
   const auth = useAuth()
   const to =
     auth.status === 'anonymous' ? paths.loginThenReturn(paths.postCreate) : paths.postCreate
 
   return (
-    <ButtonLink to={to} variant="primary" size="sm" className={styles.create}>
-      <PlusIcon />글 올리기
+    <ButtonLink to={to} variant="secondary" size="sm" className={cx(styles.create, tip.host)}>
+      <Plus />
+      <span className={styles.createLabel}>글 올리기</span>
+      <span className={cx(tip.tip, styles.createTip)} aria-hidden="true">
+        글 올리기
+      </span>
     </ButtonLink>
   )
 }
@@ -89,7 +99,7 @@ function HeaderAuth() {
 
 /**
  * 꼬리표 두 장. 보관소에서 물건에 다는 이름표다 — 잃어버린 쪽(마리골드)과 주운 쪽(코발트)이 겹친다.
- * 사진 없는 '기타' 게시글의 포스터와 같은 모양이다.
+ * 서비스의 표지라 이 자리(와 파비콘)에만 쓴다. 다른 화면의 장식으로 되풀이하지 않는다.
  */
 function BrandMark() {
   const tag =
@@ -98,11 +108,11 @@ function BrandMark() {
     <svg className={styles.mark} viewBox="0 0 30 24" aria-hidden="true" focusable="false">
       <g transform="translate(7.5 0.4) rotate(14 12 12)">
         <path d={tag} fill="var(--found-face)" />
-        <circle cx="12" cy="7.9" r="1.65" fill="var(--paper)" />
+        <circle cx="12" cy="7.9" r="1.65" fill="var(--surface)" />
       </g>
       <g transform="translate(-0.5 0.6) rotate(-12 12 12)">
-        <path d={tag} fill="var(--lost-face)" stroke="var(--paper)" strokeWidth="1.6" strokeLinejoin="round" />
-        <circle cx="12" cy="7.9" r="1.65" fill="var(--paper)" />
+        <path d={tag} fill="var(--lost-face)" stroke="var(--surface)" strokeWidth="1.6" strokeLinejoin="round" />
+        <circle cx="12" cy="7.9" r="1.65" fill="var(--surface)" />
       </g>
     </svg>
   )

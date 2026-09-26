@@ -1,6 +1,9 @@
+import type { MouseEvent } from 'react'
 import { Link, type To } from 'react-router-dom'
 
-import { ChevronLeftIcon, ChevronRightIcon } from './icons'
+import { isPlainClick } from '@/shared/lib/events'
+
+import { CaretLeft, CaretRight } from './icons'
 import styles from './Pagination.module.css'
 
 interface PaginationProps {
@@ -9,7 +12,7 @@ interface PaginationProps {
   totalPages: number
   /** 페이지 번호 → 주소. 링크라서 새 탭 열기 · 주소 복사가 된다 */
   hrefFor: (page: number) => To
-  /** 링크를 누른 직후. 목록 맨 위로 옮길 때 쓴다 */
+  /** 링크를 누른 직후. 목록 맨 위로 옮길 때 쓴다. 새 탭으로 여는 클릭(Ctrl · Cmd · 가운데 버튼)에는 부르지 않는다 */
   onNavigate?: () => void
 }
 
@@ -41,17 +44,20 @@ export function Pagination({ page, totalPages, hrefFor, onNavigate }: Pagination
 
   const hasPrev = page > 1
   const hasNext = page < totalPages
+  const handleClick = (event: MouseEvent) => {
+    if (isPlainClick(event)) onNavigate?.()
+  }
 
   return (
     <nav className={styles.nav} aria-label="페이지 이동">
       {hasPrev ? (
-        <Link className={styles.step} to={hrefFor(page - 1)} onClick={onNavigate}>
-          <ChevronLeftIcon />
+        <Link className={styles.step} to={hrefFor(page - 1)} onClick={handleClick}>
+          <CaretLeft />
           이전
         </Link>
       ) : (
         <span className={styles.step} aria-disabled="true">
-          <ChevronLeftIcon />
+          <CaretLeft />
           이전
         </span>
       )}
@@ -69,7 +75,7 @@ export function Pagination({ page, totalPages, hrefFor, onNavigate }: Pagination
                 to={hrefFor(slot)}
                 aria-label={`${slot}페이지`}
                 aria-current={slot === page ? 'page' : undefined}
-                onClick={onNavigate}
+                onClick={handleClick}
               >
                 {slot}
               </Link>
@@ -88,14 +94,14 @@ export function Pagination({ page, totalPages, hrefFor, onNavigate }: Pagination
       </p>
 
       {hasNext ? (
-        <Link className={styles.step} to={hrefFor(page + 1)} onClick={onNavigate}>
+        <Link className={styles.step} to={hrefFor(page + 1)} onClick={handleClick}>
           다음
-          <ChevronRightIcon />
+          <CaretRight />
         </Link>
       ) : (
         <span className={styles.step} aria-disabled="true">
           다음
-          <ChevronRightIcon />
+          <CaretRight />
         </span>
       )}
     </nav>

@@ -14,8 +14,8 @@
   margin: 0 auto;
   padding: 0;
   border: 0;
-  border-radius: var(--radius-card) var(--radius-card) 0 0;
-  background-color: var(--paper);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  background-color: var(--surface-raised);
   color: inherit;
   box-shadow: var(--shadow-overlay);
 }
@@ -41,7 +41,7 @@
     max-width: 34rem;
     max-height: min(86dvh, 46rem);
     margin: auto;
-    border-radius: var(--radius-card);
+    border-radius: var(--radius-md);
   }
 
   .sheet[open] {
@@ -89,13 +89,13 @@
   place-items: center;
   width: var(--tap-min);
   height: var(--tap-min);
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-sm);
   color: var(--text-body);
 }
 
 .close svg {
-  width: 1.375rem;
-  height: 1.375rem;
+  width: var(--icon-lg);
+  height: var(--icon-lg);
 }
 
 @media (hover: hover) {

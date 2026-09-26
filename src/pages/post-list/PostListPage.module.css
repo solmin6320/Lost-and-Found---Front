@@ -1,7 +1,7 @@
 /*
  * SCR-01 배치 — 모든 폭에서 같은 순서다. 넓어지면 칸이 늘 뿐, 필터가 옆 열로 빠지지 않는다.
  *   ① 제목 + 의도 선택(두 색 면)   ② 검색 + 필터 칩   ③ 결과 제목 · 수   ④ 사진 피드   ⑤ 페이지 · 다음 행동
- *   피드 열 수는 결과 칸의 폭으로 정한다(컨테이너 쿼리) : 2열 → 3열(34rem) → 4열(54rem)
+ *   피드 열 수는 결과 칸의 폭으로 정한다(컨테이너 쿼리) : 2열 → 3열(34rem) → 4열(54rem). 한 쪽 24건이라 줄이 빈 채 끝나지 않는다
  */
 
 /* 칸을 0 까지 줄일 수 있게 둔다. 걸린 칩이 길어져도 칩 줄 안에서 옆으로 넘길 뿐, 페이지 폭을 밀어내지 않는다 */
@@ -21,8 +21,8 @@
 .title {
   font-size: clamp(1.5rem, 1.05rem + 1.9vw, 2.5rem);
   font-weight: var(--weight-extrabold);
-  line-height: 1.2;
-  letter-spacing: -0.035em;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
 }
 
 @media (min-width: 40rem) {
@@ -41,21 +41,13 @@
   margin-bottom: var(--space-5);
 }
 
-/*
- * 넓은 화면에서는 검색과 칩을 한 줄에. 칩 줄이 좁은 화면처럼 화면 끝까지 밀려 나가지 않게
- * 좌우로 붙였던 여백을 거둔다
- */
+/* 넓은 화면에서는 검색과 칩을 한 줄에. 칩 줄은 그 옆 칸 안에서 줄을 바꾼다(FilterChips.module.css 의 64rem) */
 @media (min-width: 64rem) {
   .finder {
     grid-template-columns: minmax(0, 30rem) minmax(0, 1fr);
-    align-items: center;
+    align-items: start;
     gap: var(--space-4);
     margin-bottom: var(--space-8);
-  }
-
-  .filters > div {
-    margin-inline: 0;
-    padding-inline: 0;
   }
 }
 
@@ -79,12 +71,11 @@
 .heading {
   font-size: var(--text-xl);
   font-weight: var(--weight-extrabold);
-  letter-spacing: -0.03em;
+  letter-spacing: var(--tracking-tight);
 }
 
 .heading:focus-visible {
   outline-offset: 4px;
-  border-radius: var(--radius-sm);
 }
 
 .count {
@@ -103,10 +94,6 @@
 /* 조건을 바꿔 다시 부르는 동안 이 숫자는 직전 조건의 것이다. 칩과 어긋나 보이지 않게 목록과 같이 흐린다 */
 .count[data-stale] {
   opacity: 0.45;
-}
-
-.clearAll {
-  margin-left: auto;
 }
 
 /* ── ④ 사진 피드 ── */
@@ -137,37 +124,10 @@
   opacity: 0.45;
 }
 
-/* 비어 있음 · 오류 — 사진 자리에 옅은 면 한 장. 흰 종이 위 빈 자리는 고장처럼 보인다 */
+/* 비어 있음 · 오류 — 사진 자리에 옅은 면 한 장. 종이 위 빈 자리는 고장처럼 보인다 */
 .stateBox {
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-md);
   background-color: var(--surface-sunken);
-}
-
-/* 빈 상태의 그림은 아이콘보다 크게. 포스터와 같은 그림이다 */
-.emptyWithArt {
-  --state-icon-size: 5.5rem;
-}
-
-.emptyArt {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.emptyArt[data-concept='LOST'] {
-  --art-body: var(--lost-400);
-  --art-shade: var(--lost-500);
-  --art-line: var(--lost-900);
-  --art-light: #fffdf5;
-  --art-hole: var(--surface-sunken);
-}
-
-.emptyArt[data-concept='FOUND'] {
-  --art-body: var(--found-400);
-  --art-shade: var(--found-500);
-  --art-line: var(--found-900);
-  --art-light: #f7f9ff;
-  --art-hole: var(--surface-sunken);
 }
 
 /* ── ⑤ 페이지 · 다음 행동 ── */
@@ -178,4 +138,8 @@
 
 .next {
   margin-top: var(--space-8);
+}
+
+.filters {
+  min-width: 0;
 }

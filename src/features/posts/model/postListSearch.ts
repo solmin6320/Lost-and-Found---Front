@@ -118,6 +118,12 @@ export function postListSearchKey(search: PostListSearch): string {
   return toSearchParams(search).toString()
 }
 
+/**
+ * 목록 한 쪽에 싣는 글 수. 2 · 3 · 4 의 공배수라 피드가 몇 열이든 마지막 줄이 비지 않는다
+ * (서버 기본 20 은 3열에서 두 칸이 빈다). 서버 최대는 100
+ */
+export const POST_LIST_PAGE_SIZE = 24
+
 /** 조건 → 서버 요청. 여기서만 page 를 0부터로 바꾼다 */
 export function toPostListParams(search: PostListSearch): PostListParams {
   return {
@@ -129,6 +135,7 @@ export function toPostListParams(search: PostListSearch): PostListParams {
     from: search.from,
     to: search.to,
     page: search.page - 1,
+    size: POST_LIST_PAGE_SIZE,
   }
 }
 

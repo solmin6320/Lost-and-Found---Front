@@ -16,10 +16,15 @@ interface PostThumbnailProps {
    * 백엔드가 필드를 추가하면 그 값을 넘기기만 하면 된다. 없으면 포스터가 대신한다.
    */
   src?: string
-  /** 게시글 제목. "이미지" 라고 쓰지 않는다 */
+  /**
+   * 게시글 제목. "이미지" 라고 쓰지 않는다.
+   * 제목이 바로 옆에 글자로 있는 자리(목록 카드)에서는 `""` — 같은 제목을 두 번 읽지 않게
+   */
   alt: string
   /** 포스터 그림을 조금씩 다르게 기울인다. 같은 카테고리가 이어져도 복사한 것처럼 보이지 않게 */
   seed?: number
+  /** 첫 화면에 보이는 사진(목록 첫 줄)은 `eager`. 나머지는 스크롤에 닿을 때 받는다 */
+  loading?: 'lazy' | 'eager'
   className?: string
 }
 
@@ -31,7 +36,15 @@ const TILTS = [-7, 4, -3, 8, -5]
  * 없거나 불러오지 못하면 **포스터**로 바꾼다 : 유형 색의 연한 바탕 + 큰 카테고리 그림 + 카테고리 이름.
  * 회색 네모를 두지 않는다. 사진 없는 글이 스무 장 이어져도 목록이 초라해 보이면 안 된다.
  */
-export function PostThumbnail({ category, type, src, alt, seed = 0, className }: PostThumbnailProps) {
+export function PostThumbnail({
+  category,
+  type,
+  src,
+  alt,
+  seed = 0,
+  loading = 'lazy',
+  className,
+}: PostThumbnailProps) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null)
 
   if (src && src !== failedSrc) {
@@ -42,7 +55,7 @@ export function PostThumbnail({ category, type, src, alt, seed = 0, className }:
         alt={alt}
         width={400}
         height={400}
-        loading="lazy"
+        loading={loading}
         decoding="async"
         onError={() => setFailedSrc(src)}
       />

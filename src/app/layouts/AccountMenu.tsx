@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 
 import { paths } from '@/app/paths'
 import type { MemberResponse } from '@/features/members'
-import { ChevronDownIcon, UserIcon } from '@/shared/ui/icons'
+import { CaretDown, User } from '@/shared/ui/icons'
 
 import styles from './AccountMenu.module.css'
 
@@ -77,9 +77,9 @@ export function AccountMenu({ me, onLogout }: AccountMenuProps) {
         aria-label={`${me.nickname} 계정 메뉴`}
         onClick={() => setOpen((value) => !value)}
       >
-        <UserIcon />
+        <User />
         <span className={styles.name}>{me.nickname}</span>
-        <ChevronDownIcon className={styles.chevron} />
+        <CaretDown className={styles.chevron} />
       </button>
 
       {open ? (

@@ -50,6 +50,21 @@ button {
   cursor: pointer;
 }
 
+/*
+ * 누를 수 있는 것 — 탭하면 번지는 회색 네모(모바일 기본 하이라이트)를 모든 요소에서 똑같이 끈다.
+ * 대신 눌림은 global.css 의 한 가지 반응(투명도)으로 보여 준다. 300ms 탭 지연도 없앤다
+ */
+a,
+button,
+input,
+select,
+textarea,
+label,
+summary {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
 /* 긴 URL·파일명이 375px 화면을 가로로 밀어내지 않게 */
 p,
 h1,

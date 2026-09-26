@@ -7,7 +7,7 @@
 @import './tokens.css';
 
 body {
-  background-color: var(--canvas);
+  background-color: var(--surface);
   color: var(--text-strong);
   font-family: var(--font-sans);
   font-size: var(--text-base);
@@ -41,7 +41,7 @@ p {
 
 a {
   color: inherit;
-  text-decoration-color: var(--ink-300);
+  text-decoration-color: var(--border-hover);
   text-underline-offset: 0.2em;
 }
 
@@ -51,13 +51,17 @@ a:hover {
 
 /*
  * 포커스 링 — 지우지 않는다.
- * 잉크색 2px 을 2px 띄워 그린다. 흰 종이 위에서도, 분실 · 습득 색 면 바깥에서도 보인다.
+ * 잉크색 2px 을 2px 띄워 그린다. 종이 위에서도, 분실 · 습득 색 면 바깥에서도 보인다(밝게 17:1 · 어둡게 15:1).
  * 색을 쓰지 않으므로 분실 · 습득의 색 신호와 섞이지 않는다.
  */
 :focus-visible {
-  outline: 2px solid var(--ink-900);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
-  border-radius: 2px;
+}
+
+/* 모서리가 없는 요소(글자 링크 · 제목)에만 작은 반경을 준다. 자기 반경이 있는 요소는 그 모양을 따른다 */
+:where(a, h1, h2, h3, h4, p, span):focus-visible {
+  border-radius: var(--radius-xs);
 }
 
 /* 마우스 클릭에는 링을 띄우지 않되, 키보드에는 항상 띄운다 */
@@ -65,9 +69,22 @@ a:hover {
   outline: none;
 }
 
+/*
+ * 눌림 — 누를 수 있는 모든 것이 같은 한 가지로 반응한다 : 잠깐 옅어진다.
+ * 크기 · 위치를 바꾸지 않아 옆 요소와 레이아웃 경계가 흔들리지 않는다.
+ * 선택자 무게가 0 이라(:where) 컴포넌트가 덮을 수 있다 — 카드처럼 링크 하나가 넓은 면을 덮는 곳.
+ */
+:where(a, button, summary, label):active:not(:disabled, [aria-disabled='true']) {
+  opacity: var(--press-opacity);
+}
+
+:where(a, button, summary, label) {
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
 ::selection {
-  background-color: var(--lost-200);
-  color: var(--ink-900);
+  background-color: var(--selection);
+  color: var(--text-strong);
 }
 
 /*
@@ -113,9 +130,9 @@ time,
   left: var(--space-2);
   z-index: var(--z-toast);
   padding: var(--space-2) var(--space-4);
-  background-color: var(--ink-900);
-  color: var(--paper);
-  border-radius: var(--radius-control);
+  background-color: var(--action);
+  color: var(--on-action);
+  border-radius: var(--radius-sm);
   transform: translateY(-200%);
 }
 
