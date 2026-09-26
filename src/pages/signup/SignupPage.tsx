@@ -11,7 +11,7 @@ const JUST_SIGNED_UP: PostListEntryState = { justSignedUp: true }
  * SCR-06 회원가입 · `/signup?redirect=`
  *
  * 가입에 성공하면 **방금 입력한 값으로 바로 로그인**하고 돌아갈 곳(없으면 목록)으로 간다 — 같은 값을 다시 치게 하지 않는다.
- * 목록으로 갈 때는 온보딩 신호(`PostListEntryState`)를 싣는다. 온보딩 화면은 다음 작업이다.
+ * 목록으로 갈 때는 온보딩 신호(`PostListEntryState`)를 싣는다. 목록이 이것을 보고 안내를 한 번 띄운다.
  * 가입은 됐는데 이어진 로그인만 실패하면 로그인 화면으로 보내며 "가입했습니다. 로그인하세요." + 이메일을 채운다.
  */
 export function SignupPage() {

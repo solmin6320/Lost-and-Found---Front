@@ -49,7 +49,7 @@ export interface LoginNoticeState {
 
 /**
  * 가입 직후 목록으로 갈 때 붙인다. 목록이 온보딩 1층(docs/온보딩설계.md 3장)을 한 번 띄우는 신호다.
- * 지금은 싣기만 한다 — 온보딩은 다음 작업에서 이 값을 읽는다
+ * 목록(`app/onboarding` 의 `usePostListGuide`)이 읽자마자 기록에서 지운다
  */
 export interface PostListEntryState {
   justSignedUp: true

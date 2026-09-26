@@ -2,9 +2,11 @@ import { keepPreviousData, useQuery, type UseQueryResult } from '@tanstack/react
 import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import type { To } from 'react-router-dom'
 
+import { OnboardingTour, usePostListGuide } from '@/app/onboarding'
 import { paths } from '@/app/paths'
 import { useAuth } from '@/features/auth'
 import {
+  BadgeGuide,
   ConceptButtonLink,
   PostCard,
   PostCardSkeleton,
@@ -72,7 +74,9 @@ export function PostListPage() {
     key: 0,
   })
   const summaryRef = useRef<HTMLDivElement>(null)
+  const titleRef = useRef<HTMLHeadingElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
+  const guide = usePostListGuide()
   const filterBarRef = useRef<HTMLDivElement>(null)
 
   /**
@@ -138,22 +142,27 @@ export function PostListPage() {
     <div className={styles.page}>
       {/* 읽는 순서 = Tab 순서 : 의도 → 검색 → 필터 → 결과. 가장 먼저 할 일이 가장 위에 있다 */}
       <section className={styles.hero} aria-labelledby="post-list-title">
-        <h1 id="post-list-title" className={styles.title}>
+        {/* 가입 직후 안내를 닫으면 포커스가 여기로 온다(누른 가입 버튼은 이미 사라졌다) */}
+        <h1 id="post-list-title" ref={titleRef} tabIndex={-1} className={styles.title}>
           잃어버렸나요, 주웠나요?
         </h1>
-        <PostIntentPicker
-          selected={search.type}
-          hrefFor={(type) => hrefWith({ type })}
-          showCounts={!search.keyword && !filtered}
-          // 같은 의도를 다시 눌렀다. 링크가 1쪽으로 이동한다 — 이미 1쪽이면 주소가 그대로라 바로 옮긴다
-          onReselect={() => {
-            if (search.page === 1) focusResults()
-            else refocus.current = { kind: 'results' }
-          }}
-        />
+        {/* 온보딩 1단계가 가리키는 자리 */}
+        <div data-guide="intent">
+          <PostIntentPicker
+            selected={search.type}
+            hrefFor={(type) => hrefWith({ type })}
+            showCounts={!search.keyword && !filtered}
+            // 같은 의도를 다시 눌렀다. 링크가 1쪽으로 이동한다 — 이미 1쪽이면 주소가 그대로라 바로 옮긴다
+            onReselect={() => {
+              if (search.page === 1) focusResults()
+              else refocus.current = { kind: 'results' }
+            }}
+          />
+        </div>
       </section>
 
-      <div className={styles.finder}>
+      {/* 온보딩 2단계가 가리키는 자리 */}
+      <div className={styles.finder} data-guide="finder">
         <PostSearchBar
           key={search.keyword}
           keyword={search.keyword}
@@ -195,6 +204,8 @@ export function PostListPage() {
               </>
             )}
           </p>
+          {/* 카드의 이름표가 무엇인지 — 누르면 펼친다(온보딩 2층). 저절로 뜨지 않는다 */}
+          <BadgeGuide className={styles.badgeGuide} />
         </div>
 
         <PostListBody
@@ -232,6 +243,8 @@ export function PostListPage() {
           </div>
         ) : null}
       </section>
+
+      <OnboardingTour open={guide.open} onClose={guide.close} fallbackFocus={() => titleRef.current} />
 
       <PostFilterSheet
         key={sheet.key}

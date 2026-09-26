@@ -3,7 +3,9 @@ export { postKeys, postListQueryOptions, usePostList } from './model/postQueries
 export {
   POST_CATEGORY_LABEL,
   POST_STATUS_LABEL,
+  POST_STATUS_MEANING,
   POST_TYPE_LABEL,
+  POST_TYPE_MEANING,
   lostFoundDateLabel,
 } from './model/labels'
 export {
@@ -20,6 +22,7 @@ export type { PostFilterField, PostListSearch } from './model/postListSearch'
 export { usePostListSearch } from './model/usePostListSearch'
 export { ALL_POSTS_HEADING, POST_INTENTS, intentShowing, postListHeading } from './model/postIntent'
 export type { PostIntent } from './model/postIntent'
+export { BadgeGuide } from './ui/BadgeGuide'
 export { CategoryArt } from './ui/CategoryArt'
 export { ConceptButtonLink } from './ui/ConceptButtonLink'
 export { PostCard } from './ui/PostCard'

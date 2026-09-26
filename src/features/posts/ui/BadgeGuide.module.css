@@ -1,0 +1,37 @@
+/* 이름표 안내 — 배지 열의 폭을 맞춰 설명이 같은 자리에서 시작하게 한다 */
+
+.title {
+  margin-bottom: var(--space-3);
+  color: var(--text-strong);
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+}
+
+.list {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 4.25rem minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-3);
+}
+
+.row dt {
+  display: flex;
+  padding-top: 1px;
+}
+
+.row dd {
+  margin: 0;
+}
+
+.note {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: var(--hairline);
+  color: var(--text-muted);
+}

@@ -1,10 +1,11 @@
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 
+import { requestGuide } from '@/app/onboarding'
 import { paths } from '@/app/paths'
 import { useAuth } from '@/features/auth'
 import { cx } from '@/shared/lib/cx'
 import { ButtonLink } from '@/shared/ui/Button'
-import { Gear, Plus } from '@/shared/ui/icons'
+import { Gear, Plus, Question } from '@/shared/ui/icons'
 import tip from '@/shared/ui/Tooltip.module.css'
 
 import { AccountMenu } from './AccountMenu'
@@ -13,9 +14,9 @@ import styles from './RootLayout.module.css'
 /**
  * 모든 화면이 공유하는 껍데기. 헤더 · 본문 · 푸터.
  *
- * 헤더는 넷만 둔다 — 로고(목록으로), [글 올리기], 설정(톱니), 로그인/계정.
+ * 헤더는 다섯만 둔다 — 로고(목록으로), [글 올리기], 서비스 안내(물음표), 설정(톱니), 로그인/계정.
  * [글 올리기]는 비로그인에게도 보인다. 수정·삭제와 달리 서비스로 들어오는 동선이다(SCR-01).
- * 설정도 비로그인에게 보인다 — 화면 모드는 누구나 바꾼다(SCR-08).
+ * 서비스 안내 · 설정도 비로그인에게 보인다 — 안내는 누구나 다시 보고, 화면 모드는 누구나 바꾼다(SCR-08).
  */
 export function RootLayout() {
   return (
@@ -28,11 +29,12 @@ export function RootLayout() {
         <div className={styles.headerInner}>
           <Link className={styles.wordmark} to={paths.postList}>
             <BrandMark />
-            분실물 찾기
+            <span className={styles.wordmarkText}>분실물 찾기</span>
           </Link>
 
           <div className={styles.actions}>
             <CreatePostLink />
+            <GuideButton />
             <SettingsLink />
             <HeaderAuth />
           </div>
@@ -61,13 +63,45 @@ function CreatePostLink() {
     auth.status === 'anonymous' ? paths.loginThenReturn(paths.postCreate) : paths.postCreate
 
   return (
-    <ButtonLink to={to} variant="secondary" size="sm" className={cx(styles.create, tip.host)}>
+    <ButtonLink
+      to={to}
+      variant="secondary"
+      size="sm"
+      className={cx(styles.create, tip.host)}
+      // 온보딩 3단계가 가리키는 자리
+      data-guide="create"
+    >
       <Plus />
       <span className={styles.createLabel}>글 올리기</span>
       <span className={cx(tip.tip, styles.createTip)} aria-hidden="true">
         글 올리기
       </span>
     </ButtonLink>
+  )
+}
+
+/**
+ * 서비스 안내 — 온보딩 1층을 언제든 다시 연다(docs/온보딩설계.md 2장). 안내는 목록 위에 뜬다 —
+ * 다른 화면이면 목록으로 가면서 요청을 남기고, 목록이 요청을 가져가며 연다. 닫으면 이 버튼으로 포커스가 돌아온다.
+ * 모양은 설정과 같다 — 휴대폰 폭에서는 물음표만(이름은 aria-label, 마우스 · 키보드에는 이름표), 48rem 이상은 글자도.
+ */
+function GuideButton() {
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  function handleClick() {
+    requestGuide()
+    if (location.pathname !== paths.postList) navigate(paths.postList)
+  }
+
+  return (
+    <button type="button" className={cx(styles.settings, tip.host)} aria-label="서비스 안내" onClick={handleClick}>
+      <Question />
+      <span className={styles.settingsLabel}>서비스 안내</span>
+      <span className={cx(tip.tip, styles.settingsTip)} aria-hidden="true">
+        서비스 안내
+      </span>
+    </button>
   )
 }
 

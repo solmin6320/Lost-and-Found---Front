@@ -25,6 +25,21 @@ export const POST_STATUS_LABEL: Record<PostStatus, string> = {
 }
 
 /**
+ * 이름표가 뜻하는 것 — 사용자가 직접 여는 설명(목록의 `이름표 안내`, 필터 시트의 상태 도움말)에 쓴다.
+ * 없는 기능(쪽지 · 소유 확인)을 약속하지 않는다
+ */
+export const POST_TYPE_MEANING: Record<PostType, string> = {
+  LOST: '누군가 잃어버린 물건이에요',
+  FOUND: '누군가 주워 둔 물건이에요',
+}
+
+export const POST_STATUS_MEANING: Record<PostStatus, string> = {
+  OPEN: '아직 주인을 찾고 있어요',
+  IN_PROGRESS: '주인으로 보이는 사람과 이야기하고 있어요',
+  DONE: '주인에게 돌아간 물건이에요',
+}
+
+/**
  * `lostFoundDate` 의 라벨. 등록일(`createdAt`)과 헷갈리지 않게 유형을 붙인다 — "분실일", "습득일"
  */
 export function lostFoundDateLabel(type: PostType): string {

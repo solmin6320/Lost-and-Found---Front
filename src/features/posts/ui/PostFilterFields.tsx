@@ -49,6 +49,8 @@ export function PostFilterFields({ value, onChange, periodError }: PostFilterFie
         name={`${id}-status`}
         columns={4}
         options={POST_STATUSES.map((status) => ({ value: status, label: POST_STATUS_LABEL[status] }))}
+        // 칸에는 이름만. 뜻은 그 조건을 고르는 자리에서 한 줄로(온보딩 2층)
+        hint="연락중은 주인으로 보이는 사람과 이야기하는 글, 완료는 주인에게 돌아간 글이에요."
         value={value.status}
         onChange={(status: PostStatus | undefined) => onChange({ status })}
       />
@@ -121,6 +123,8 @@ interface ChoiceGroupProps<T extends string> {
   onChange: (value: T | undefined) => void
   /** "전체"를 포함한 칸 수. 한 줄에 다 들어가거나 줄이 가지런히 끊기게 고른다 */
   columns: number
+  /** 제목 아래 한 줄 도움말 */
+  hint?: string
 }
 
 /** 단일 선택. 맨 앞의 "전체"가 조건 없음이다 — 백엔드도 필드당 값 하나만 받는다 */
@@ -131,12 +135,19 @@ function ChoiceGroup<T extends string>({
   value,
   onChange,
   columns,
+  hint,
 }: ChoiceGroupProps<T>) {
   const all: { value: T | undefined; label: string } = { value: undefined, label: '전체' }
+  const hintId = `${name}-hint`
 
   return (
-    <fieldset className={styles.group} data-field={field}>
+    <fieldset className={styles.group} data-field={field} aria-describedby={hint ? hintId : undefined}>
       <legend className={styles.legend}>{POST_FILTER_FIELD_NAME[field]}</legend>
+      {hint ? (
+        <p id={hintId} className={styles.hint}>
+          {hint}
+        </p>
+      ) : null}
       <div className={styles.choices} style={{ '--choice-columns': columns } as CSSProperties}>
         {[all, ...options].map((option) => (
           <label key={option.value ?? 'all'} className={styles.choice}>
