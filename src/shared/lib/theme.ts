@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react'
+import { flushSync } from 'react-dom'
 
 /**
  * 화면 모드(밝게 · 어둡게). 사용자가 고른 값만 저장하고, 고르지 않았으면 기기 설정을 따른다.
@@ -95,7 +96,15 @@ export function startThemeSync() {
 /** 고른다(바로 적용). `null` 이면 다시 기기 설정을 따른다. 되돌릴 수 있는 일이라 확인하지 않는다 */
 export function setThemePreference(preference: ThemePreference) {
   writeStored(preference)
-  refresh(preference)
+  // 밝게 ↔ 어둡게는 화면 전체가 한 번에 바뀐다. 번쩍 뒤집히지 않게 짧게 겹쳐 넘긴다(View Transitions — 없는 브라우저는 바로 바뀐다).
+  // 고른 칸의 표시(React)도 같은 장면에 들어가도록 동기로 그린다. 모션 줄이기면 겹치지 않는다
+  const apply = () => flushSync(() => refresh(preference))
+  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+  if (!reduceMotion && typeof document.startViewTransition === 'function') {
+    document.startViewTransition(apply)
+  } else {
+    apply()
+  }
 }
 
 function subscribe(listener: () => void) {

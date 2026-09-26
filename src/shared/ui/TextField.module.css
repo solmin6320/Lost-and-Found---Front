@@ -64,6 +64,13 @@
   background-color: var(--surface-sunken);
 }
 
+/* 잠긴 입력(로그인 잠금). 옅은 면 + 흐린 글자 — 읽기 전용보다 한 단계 물러난다 */
+.input:disabled {
+  background-color: var(--surface-sunken);
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
 /*
  * 틀린 입력 — 빨강을 쓰지 않는다(빨강은 삭제 전용). 선을 두 배로 굵히고, 아래에 아이콘 + 문장으로 알린다.
  * 필터 시트의 기간 오류와 같은 모양이다
@@ -88,7 +95,9 @@
   align-items: center;
 }
 
+/* 오류가 나타날 때 — 입력 쪽(위)에서 살짝 내려오며 나타난다. 무엇이 바뀌었는지 눈이 따라간다 */
 .error {
+  animation: error-in var(--duration-base) var(--ease-out);
   display: flex;
   align-items: flex-start;
   gap: var(--space-1);
@@ -109,4 +118,11 @@
   color: var(--text-muted);
   font-size: var(--text-sm);
   line-height: var(--leading-snug);
+}
+
+@keyframes error-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--space-1) * -1));
+  }
 }

@@ -82,6 +82,13 @@ a:hover {
   transition: opacity var(--duration-fast) var(--ease-out);
 }
 
+/* 화면 모드 전환 — 이전 화면과 새 화면을 짧게 겹친다(shared/lib/theme.ts). 위치는 움직이지 않는다 */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--duration-slow);
+  animation-timing-function: var(--ease-out);
+}
+
 ::selection {
   background-color: var(--selection);
   color: var(--text-strong);

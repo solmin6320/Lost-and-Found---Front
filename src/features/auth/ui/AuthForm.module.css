@@ -1,0 +1,85 @@
+/*
+ * 로그인 · 가입 폼 — 칸을 세로로 쌓고, 주 버튼은 폭을 채운다(엄지가 어디를 눌러도 닿는다).
+ * 폼 전체 문제(자격 증명 불일치 · 연결 실패)와 잠금 안내는 폼 맨 위 — 눈이 폼을 읽기 시작하는 자리다.
+ */
+
+.form {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.submit {
+  margin-top: var(--space-1);
+}
+
+/* 폼 위 한 줄 — 빨강을 쓰지 않는다(빨강은 삭제 전용). 옅은 면 + 아이콘 + 굵은 글자로 알린다 */
+.formAlert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-sunken);
+  color: var(--text-strong);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+  word-break: keep-all;
+  animation: appear var(--duration-base) var(--ease-out);
+}
+
+.formAlert svg {
+  flex: none;
+  width: var(--icon-md);
+  height: var(--icon-md);
+}
+
+.formAlert:focus-visible,
+.lock:focus-visible {
+  outline-offset: 3px;
+}
+
+/* 잠금 — 폼 위의 옅은 면 한 장. 무슨 일인지(서버 문장) → 할 수 있는 것 → 나가는 길 */
+.lock {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-sunken);
+  animation: appear var(--duration-base) var(--ease-out);
+}
+
+.lockIcon {
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+  color: var(--text-strong);
+}
+
+.lockBody {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+}
+
+.lockMessage {
+  color: var(--text-strong);
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-snug);
+  word-break: keep-all;
+}
+
+.lockHint {
+  color: var(--text-body);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  word-break: keep-all;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--space-1) * -1));
+  }
+}

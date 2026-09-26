@@ -25,6 +25,8 @@ export const paths = {
   loginThenReturn: (redirect: string) => `/login?redirect=${encodeURIComponent(redirect)}`,
   /** [3.1] 회원가입 */
   signup: '/signup',
+  /** 가입 후 `redirect` 로 이어진다. 로그인 ↔ 가입을 오가도 돌아갈 곳을 잃지 않게 링크가 물고 다닌다 */
+  signupThenReturn: (redirect: string) => `/signup?redirect=${encodeURIComponent(redirect)}`,
 
   /** [6.1] 마이페이지 — 내가 쓴 글 */
   myPage: '/me',
@@ -36,9 +38,19 @@ export const paths = {
 } as const
 
 /**
- * 로그인 화면에 넘기는 안내 한 줄(`navigate(paths.login, { state })`).
- * 로그인 화면이 폼 위에 띄운다 — 단계 2(SCR-05)에서 읽는다
+ * 로그인 화면에 넘기는 안내 한 줄(`navigate(paths.login, { state })`). 로그인 화면이 폼 위에 띄운다(SCR-05).
+ * 설정의 비밀번호 변경 뒤 · 가입은 됐는데 이어진 로그인만 실패했을 때 쓴다
  */
 export interface LoginNoticeState {
   notice: string
+  /** 이메일 칸을 미리 채운다(가입 직후). 비밀번호는 싣지 않는다 — 기록(history)에 남는다 */
+  email?: string
+}
+
+/**
+ * 가입 직후 목록으로 갈 때 붙인다. 목록이 온보딩 1층(docs/온보딩설계.md 3장)을 한 번 띄우는 신호다.
+ * 지금은 싣기만 한다 — 온보딩은 다음 작업에서 이 값을 읽는다
+ */
+export interface PostListEntryState {
+  justSignedUp: true
 }

@@ -153,7 +153,7 @@ export function PasswordChangeForm({ email, onChanged }: PasswordChangeFormProps
   )
 }
 
-interface PasswordInputProps {
+export interface PasswordInputProps {
   label: string
   name: string
   autoComplete: 'current-password' | 'new-password'
@@ -165,11 +165,15 @@ interface PasswordInputProps {
   hint?: string
   maxLength?: number
   readOnly?: boolean
+  disabled?: boolean
   ref?: Ref<HTMLInputElement>
 }
 
-/** 비밀번호 한 칸 + 보기/숨기기. 불안한 상태에서 한 손으로 치다 보면 오타가 난다 */
-function PasswordInput({ label, onChange, onBlur, ref, ...rest }: PasswordInputProps) {
+/**
+ * 비밀번호 한 칸 + 보기/숨기기. 불안한 상태에서 한 손으로 치다 보면 오타가 난다.
+ * 로그인 · 가입 폼도 같은 칸을 쓴다(보기 버튼 모양이 화면마다 달라지지 않게)
+ */
+export function PasswordInput({ label, onChange, onBlur, ref, ...rest }: PasswordInputProps) {
   const [shown, setShown] = useState(false)
 
   return (
@@ -187,6 +191,7 @@ function PasswordInput({ label, onChange, onBlur, ref, ...rest }: PasswordInputP
           className={styles.reveal}
           aria-label={`${label} 보기`}
           aria-pressed={shown}
+          disabled={rest.disabled}
           onClick={() => setShown((value) => !value)}
         >
           {shown ? <EyeSlash /> : <Eye />}
