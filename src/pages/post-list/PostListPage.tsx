@@ -348,7 +348,12 @@ function PostListBody({
     >
       {content.map((post, index) => (
         <li key={post.id}>
-          <PostCard post={post} to={paths.postDetail(post.id)} priority={index < FIRST_ROW} />
+          <PostCard
+            post={post}
+            to={paths.postDetail(post.id)}
+            thumbnailUrl={post.thumbnailUrl}
+            priority={index < FIRST_ROW}
+          />
         </li>
       ))}
     </ul>

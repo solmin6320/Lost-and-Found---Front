@@ -1,6 +1,15 @@
 import { request, setTokenRefresher } from '@/shared/lib/http'
 
-import type { LoginRequest, LoginResponse } from './types'
+import type { LoginRequest, LoginResponse, SignupRequest, SignupResponse } from './types'
+
+/**
+ * [3.1] `POST /api/auth/signup` — 201 과 회원 정보를 돌려준다. 토큰은 주지 않는다(로그인은 따로).
+ * 토큰이 필요 없는 공개 엔드포인트라 싣지 않고, 401 재발급도 걸지 않는다.
+ * 실패 code : `DUPLICATE_EMAIL` · `DUPLICATE_NICKNAME`(409) · `INVALID_INPUT`(400, message 가 필드를 말한다)
+ */
+export function signup(body: SignupRequest): Promise<SignupResponse> {
+  return request<SignupResponse>('/api/auth/signup', { method: 'POST', body, skipAuth: true })
+}
 
 /**
  * [3.2] `POST /api/auth/login`.

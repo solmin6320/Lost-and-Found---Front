@@ -32,7 +32,7 @@ export const isPostCategory = (value: unknown): value is PostCategory =>
   isOneOf(POST_CATEGORIES, value)
 export const isPostStatus = (value: unknown): value is PostStatus => isOneOf(POST_STATUSES, value)
 
-/** `GET /api/posts` 의 항목 하나. 본문(`content`)·이미지·작성자 id 는 없다 */
+/** `GET /api/posts` 의 항목 하나. 본문(`content`)·작성자 id 는 없고, 이미지는 대표 한 장(`thumbnailUrl`)만 있다 */
 export interface PostListResponse {
   id: number
   /** 작성자 닉네임. 목록에는 `memberId` 가 없어 본인 판정을 할 수 없다 */
@@ -47,6 +47,8 @@ export interface PostListResponse {
   viewCount: number
   /** 등록일시. `LocalDateTime` — 시간대 오프셋이 없다 (`"2026-09-21T14:03:11.123456"`) */
   createdAt: string
+  /** 대표 사진(첫 장) 주소. 사진이 없는 글은 `null` — 카드가 포스터로 채운다 */
+  thumbnailUrl: string | null
 }
 
 /**

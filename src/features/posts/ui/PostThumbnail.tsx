@@ -11,10 +11,7 @@ interface PostThumbnailProps {
   category: PostCategory
   /** 포스터의 색. 분실이면 마리골드, 습득이면 코발트 */
   type: PostType
-  /**
-   * 썸네일 주소. **목록 API(`PostListResponse`)는 아직 이미지를 주지 않는다.**
-   * 백엔드가 필드를 추가하면 그 값을 넘기기만 하면 된다. 없으면 포스터가 대신한다.
-   */
+  /** 썸네일 주소(목록은 `PostListResponse.thumbnailUrl`). 없거나 불러오지 못하면 포스터가 대신한다 */
   src?: string
   /**
    * 게시글 제목. "이미지" 라고 쓰지 않는다.
@@ -46,17 +43,24 @@ export function PostThumbnail({
   className,
 }: PostThumbnailProps) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null)
+  const [loadedSrc, setLoadedSrc] = useState<string | null>(null)
 
   if (src && src !== failedSrc) {
     return (
       <img
+        // 받는 동안은 옅은 면(자리)만 보이고, 다 받으면 사진이 떠오른다. 캐시에서 이미 받은 사진은 바로 보인다
+        ref={(img) => {
+          if (img?.complete && img.naturalWidth > 0 && loadedSrc !== src) setLoadedSrc(src)
+        }}
         className={cx(styles.frame, styles.photo, className)}
+        data-loaded={loadedSrc === src ? '' : undefined}
         src={src}
         alt={alt}
         width={400}
         height={400}
         loading={loading}
         decoding="async"
+        onLoad={() => setLoadedSrc(src)}
         onError={() => setFailedSrc(src)}
       />
     )

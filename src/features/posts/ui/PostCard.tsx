@@ -14,8 +14,8 @@ interface PostCardProps {
   post: PostListResponse
   /** 상세 주소. 경로는 app 이 정한다(`paths.postDetail(id)`) */
   to: string
-  /** 목록 API 에 아직 없다. 백엔드가 추가하면 넘긴다 */
-  thumbnailUrl?: string
+  /** 대표 사진 주소(`PostListResponse.thumbnailUrl`). 없거나 못 불러오면 포스터가 대신한다 */
+  thumbnailUrl?: string | null
   /** 목록의 제목 구조에 맞춘다 */
   headingLevel?: 'h2' | 'h3'
   /** 첫 화면에 보이는 카드(목록 첫 줄). 사진을 미루지 않고 바로 받는다 */
@@ -82,7 +82,7 @@ export function PostCard({
           className={styles.visual}
           category={post.category}
           type={post.type}
-          src={thumbnailUrl}
+          src={thumbnailUrl ?? undefined}
           alt=""
           seed={post.id}
           loading={priority ? 'eager' : 'lazy'}

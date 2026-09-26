@@ -13,11 +13,21 @@
 }
 
 /* width · height 속성은 비율 힌트다(불러오기 전 자리 잡기). 실제 높이는 aspect-ratio 가 정한다 */
+/*
+ * 불러오는 동안은 사진 자리의 옅은 면만 보인다(감싼 쪽이 깐다 — 목록 카드의 `.media`).
+ * 다 받으면 제자리에서 떠오른다(투명도만, 자리는 처음부터 잡혀 있어 아무것도 밀리지 않는다)
+ */
 .photo {
   height: auto;
   object-fit: cover;
-  /* 불러오는 동안 · 투명한 PNG 뒤 */
+  /* 투명한 PNG 뒤 */
   background-color: var(--surface-sunken);
+  opacity: 0;
+  transition: opacity var(--duration-slow) var(--ease-out);
+}
+
+.photo[data-loaded] {
+  opacity: 1;
 }
 
 /*
